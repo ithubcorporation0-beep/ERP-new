@@ -5,7 +5,11 @@
 - [x] STEP 2 — PRP batch B (05–10)
 - [x] STEP 3 — PRP batch C (11–17)
 - [x] STEP 4 — Phases + decisions (18–19) written, consistency review done
-- [ ] STEP 4 — You answer decisions D-01 … D-61; PRP updated; DECISIONS.md filled
+- [x] STEP 4 — Decisions answered; PRP updated; DECISIONS.md filled
+
+## Open decisions
+- [ ] D-47 — plan names, prices, limits (before Step 22)
+- [ ] D-52 — product name, domain, brand colour (before Step 24; working name is fine until then)
 
 ## Stage 2 — Setup
 - [ ] STEP 5 — Project setup + GitHub

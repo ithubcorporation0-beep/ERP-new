@@ -61,7 +61,7 @@
 | Browser (optional) | Playwright | Login → create invoice → record payment smoke test | `npx playwright test` (D-61) |
 | Manual | Checklists at the end of every step | What to click, what you should see | — |
 
-**D-59 — where the database tests run:** recommended on the **cloud dev project** (no Docker needed on Windows). Each test runs inside a transaction that is rolled back at the end, so it leaves no data behind. Local Supabase in Docker is optional for later.
+**D-59 — where the database tests run:** on the **cloud dev project** (no Docker needed on Windows). Each test runs inside a transaction that is rolled back at the end, so it leaves no data behind. Local Supabase in Docker is optional for later.
 
 ### 3.2 Required test groups
 
@@ -107,9 +107,9 @@ Expected result when each role tries the action inside **their own** organizatio
 
 Test data: `supabase/seed.sql` (dev project only) creates **two organizations**, each with one user per role, two customers each with a client login, projects, tasks, invoices, payments, expenses and documents — so every row of this matrix can be tried quickly. Seed users use obviously fake emails on a test domain and a documented dev-only password; they never exist in production.
 
-## Decisions raised in this file
+## Decisions for this file (answered 2026-09-23 — "use recommendation")
 
-| # | Question | Recommended default | Why |
+| # | Question | Decision (answered 2026-09-23) | Why |
 |---|---|---|---|
 | D-55 | CSV export in V1 | **Yes** for customers, invoices, payments, expenses and financial reports, only for roles that can see that data; max 10,000 rows. | Accountants need data in Excel; cheap to build safely. |
 | D-59 | Where database tests run | **Cloud dev project**, each test rolled back; no Docker needed. | You use Windows; Docker Desktop is heavy and a common source of setup problems. |

@@ -148,6 +148,6 @@ Browser form → Server Action recordPayment({ invoiceId, amount, date, method, 
 | Preview (every non-main branch on Vercel) | `*.vercel.app` preview link | `saas-app-dev` |
 | Production (main branch) | real domain | separate Supabase production project (decision in `17-deployment.md`) |
 
-## 7. Decisions raised in this file
+## 7. Decisions for this file (answered 2026-09-23 — "use recommendation")
 
 None new. This file depends on: D-01 (platform admin tenant access), D-14 (overpayment rule), D-24 (organization deletion), and D-34 (invitation delivery).

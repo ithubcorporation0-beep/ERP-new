@@ -141,9 +141,9 @@ Filters: date range (default last 7 days), person, module/table, action. 50 rows
 
 Kept forever in V1 (D-27). Size estimate: a busy small business creates a few thousand rows per month — tiny for PostgreSQL.
 
-## Decisions raised in this file
+## Decisions for this file (answered 2026-09-23 — "use recommendation")
 
-| # | Question | Recommended default | Why |
+| # | Question | Decision (answered 2026-09-23) | Why |
 |---|---|---|---|
 | D-60 | When to add email / WhatsApp notifications | **V2**, starting with email for `invoice_issued` and `task_assigned`, with per-user preferences. | Needs the email provider (D-33) and preference screens; in-app is enough to launch. |
 

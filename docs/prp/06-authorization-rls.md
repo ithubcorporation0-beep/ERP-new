@@ -316,6 +316,6 @@ Storage policies are tied to this table: a file can be downloaded only if the us
   7. Disabled member / suspended organization → 0 rows.
   8. Nobody can update or delete `activity_logs`.
 
-## 8. Decisions raised in this file
+## 8. Decisions for this file (answered 2026-09-23 — "use recommendation")
 
 None new. Depends on: D-01, D-02, D-03, D-05, D-06, D-07, D-08, D-25, D-32.

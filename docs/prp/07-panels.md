@@ -299,9 +299,9 @@ Same pages as Owner/Admin, limited to:
 
 Clients never see: other customers, team lists, prices list, expenses, drafts, internal comments, reports, settings, activity log.
 
-## 10. Decisions raised in this file
+## 10. Decisions for this file (answered 2026-09-23 — "use recommendation")
 
-| # | Question | Recommended default | Why |
+| # | Question | Decision (answered 2026-09-23) | Why |
 |---|---|---|---|
 | D-42 | Do clients see void invoices? | **Yes**, clearly stamped "VOID". | The customer may already have received it; hiding it causes confusion. |
 

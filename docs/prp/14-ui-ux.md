@@ -36,7 +36,7 @@ Status badges use these consistently everywhere:
 | paid, completed, done | green |
 | void, cancelled, reversed, disabled, suspended, expired | red/grey (strikethrough for void) |
 
-**Dark mode:** D-51 — recommended **light mode only in V1** (the token system makes dark mode a small later change).
+**Dark mode:** **light mode only in V1** (D-51) (the token system makes dark mode a small later change).
 All text/background pairs meet **WCAG AA contrast** (a readability standard: at least 4.5 : 1 for normal text).
 
 ## 3. Typography
@@ -112,9 +112,9 @@ The invoice print view and payment receipt use a print stylesheet: A4, black on 
 - Dates: `23 Sep 2026`; date + time: `23 Sep 2026, 3:45 pm` in the organization timezone.
 - Relative times in notifications and logs ("2 hours ago"), with the exact time on hover.
 
-## 10. Decisions raised in this file
+## 10. Decisions for this file (answered 2026-09-23 — "use recommendation")
 
-| # | Question | Recommended default | Why |
+| # | Question | Decision (answered 2026-09-23) | Why |
 |---|---|---|---|
 | D-51 | Dark mode | **Light mode only in V1.** | Halves visual testing; tokens make it easy to add later. |
 

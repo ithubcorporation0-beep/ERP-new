@@ -162,6 +162,6 @@ Rule 11 of `CLAUDE.md`: every package is announced before it is installed. Plann
 
 Not planned: state-management libraries, ORMs (database helper libraries), CSS frameworks other than Tailwind, `@supabase/auth-helpers-*` (deprecated).
 
-## 4. Decisions raised in this file
+## 4. Decisions for this file (answered 2026-09-23 — "use recommendation")
 
 None new. Referenced: D-61 (browser tests, in `16-security-performance-testing.md`).

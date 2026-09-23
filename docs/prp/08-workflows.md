@@ -157,6 +157,6 @@ Customer → Project → Tasks → Completion → Invoice → Payment → Report
 
 At every stage the CLIENT (if invited) sees their project status, invoices and payments; nothing else.
 
-## 14. Decisions raised in this file
+## 14. Decisions for this file (answered 2026-09-23 — "use recommendation")
 
 None new. Depends on: D-08, D-14, D-17, D-25, D-31, D-48, D-34, D-36, D-37, D-40, D-43, D-46.

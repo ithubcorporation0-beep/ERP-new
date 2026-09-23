@@ -32,3 +32,71 @@ Open questions live in `docs/prp/19-decisions-required.md` (written in Step 4). 
 | 3-06 | 2026-09-23 | Module code lives in `src/features/<module>/` (actions, queries, schemas, components); pages stay thin. | Everything about one module in one place. | Claude (PRP 15) |
 | 3-07 | 2026-09-23 | `NEXT_PUBLIC_SITE_URL` left empty in Vercel Preview; code falls back to Vercel's automatic preview URL. | Auth links work on every preview link. | Claude (PRP 13) |
 | 4-01 | 2026-09-23 | Build order kept as in the brief, with 6 improvements: tests grow every phase, audit trigger added with each table, notification hooks as TODO comments until Phase 14, `org_writable`/`org_limits` stubs from Phase 3, rate-limit table in Phase 6, deploy after every phase. | Earlier security testing, no rewrites later. | Claude (PRP 18) |
+
+## Answers to PRP decisions (2026-09-23)
+
+You replied "yes" to the decision list = use Claude's recommendation for every decision. Full options: `docs/prp/19-decisions-required.md`.
+
+| # | Date | Question | Decision | Decided by |
+|---|---|---|---|---|
+| D-01 | 2026-09-23 | Can PLATFORM_ADMIN read an organization's business data (support)? | never — Never in V1 (c later) | You ("use recommendation") |
+| D-02 | 2026-09-23 | MANAGER's financial access | view invoices & payments — View invoices & payments only; no expenses or financial reports | You ("use recommendation") |
+| D-03 | 2026-09-23 | ACCOUNTANT's access to projects/tasks | view only | You ("use recommendation") |
+| D-04 | 2026-09-23 | Subdomains per organization later | keep `/app/[orgSlug]` — Keep paths; revisit after launch | You ("use recommendation") |
+| D-05 | 2026-09-23 | Can EMPLOYEEs see customer info? | basic info of their projects' customers | You ("use recommendation") |
+| D-06 | 2026-09-23 | Can CLIENTs see tasks? | organization setting, off by default — Setting, off by default; title/status/due date only | You ("use recommendation") |
+| D-07 | 2026-09-23 | Can EMPLOYEEs create tasks? | no | You ("use recommendation") |
+| D-08 | 2026-09-23 | Can ACCOUNTANTs create/edit customers? | yes (not archive) | You ("use recommendation") |
+| D-09 | 2026-09-23 | Can MANAGERs invite users? | no | You ("use recommendation") |
+| D-10 | 2026-09-23 | Tax model | optional tax % per line + org default rate + label — default 0%, no tax law assumed | You ("use recommendation") |
+| D-11 | 2026-09-23 | Discount model | amount per line — Amount per line, tax after discount | You ("use recommendation") |
+| D-12 | 2026-09-23 | Currency | one per organization, locked after first invoice — default PKR | You ("use recommendation") |
+| D-13 | 2026-09-23 | Invoice number format | `INV-2026-0001`, yearly restart, given at issue — with editable prefix | You ("use recommendation") |
+| D-14 | 2026-09-23 | Payment rules | one invoice per payment, no overpayment, no advances — in V1 | You ("use recommendation") |
+| D-15 | 2026-09-23 | Payment methods | fixed list (cash, bank transfer, JazzCash, Easypaisa, cheque, card, other) — Fixed list + reference field | You ("use recommendation") |
+| D-16 | 2026-09-23 | Several contact people per customer? | one contact on the customer — in V1 | You ("use recommendation") |
+| D-17 | 2026-09-23 | Internal projects (no customer) and tasks without a project? | both allowed | You ("use recommendation") |
+| D-18 | 2026-09-23 | Project budget field | not in V1 | You ("use recommendation") |
+| D-19 | 2026-09-23 | Stock / inventory for products | no | You ("use recommendation") |
+| D-20 | 2026-09-23 | Employee expense claims with approval | not in V1 | You ("use recommendation") |
+| D-21 | 2026-09-23 | Can CLIENTs upload files? | no — No in V1 | You ("use recommendation") |
+| D-22 | 2026-09-23 | Can EMPLOYEEs upload documents? | yes, to their tasks/projects | You ("use recommendation") |
+| D-23 | 2026-09-23 | Invitation expiry | 7 days | You ("use recommendation") |
+| D-24 | 2026-09-23 | How an organization is deleted | OWNER request → hidden → permanently deleted by PLATFORM_ADMIN after 30 days | You ("use recommendation") |
+| D-25 | 2026-09-23 | What happens when a subscription expires? | read-only | You ("use recommendation") |
+| D-26 | 2026-09-23 | Interface language | English only — English in V1 | You ("use recommendation") |
+| D-27 | 2026-09-23 | Retention of logs / notifications | Logs forever; read notifications deleted after 90 days | You ("use recommendation") |
+| D-28 | 2026-09-23 | Can the organization slug change? | only PLATFORM_ADMIN on request | You ("use recommendation") |
+| D-29 | 2026-09-23 | One client login linked to several customers? | one customer per client login | You ("use recommendation") |
+| D-30 | 2026-09-23 | Do CLIENTs see platform announcements? | no | You ("use recommendation") |
+| D-31 | 2026-09-23 | Can an issued invoice be edited? | no — void + duplicate | You ("use recommendation") |
+| D-32 | 2026-09-23 | Can a payment be deleted? | no — reverse only | You ("use recommendation") |
+| D-33 | 2026-09-23 | Email provider (production SMTP + invitation emails) | Resend (needs a domain you own) | You ("use recommendation") |
+| D-34 | 2026-09-23 | How invitations are delivered | copy-link always + email via our provider | You ("use recommendation") |
+| D-35 | 2026-09-23 | Password rules | ≥ 8 chars with a letter and a number — + leaked-password check on paid plan | You ("use recommendation") |
+| D-36 | 2026-09-23 | Who can sign up? | open signup with trial (PLATFORM_ADMIN can switch off) | You ("use recommendation") |
+| D-37 | 2026-09-23 | Max organizations one user can own | 3 (PLATFORM_ADMIN can raise) | You ("use recommendation") |
+| D-38 | 2026-09-23 | Two-factor login | not in V1 — ; V2 starts with PLATFORM_ADMIN | You ("use recommendation") |
+| D-39 | 2026-09-23 | Change email from profile | not in V1 | You ("use recommendation") |
+| D-40 | 2026-09-23 | Invoice PDF / emailing | print view + browser "Save as PDF" — in V1 | You ("use recommendation") |
+| D-41 | 2026-09-23 | Basis of "income vs expenses" report | cash basis (received − expenses) + invoiced shown | You ("use recommendation") |
+| D-42 | 2026-09-23 | Do CLIENTs see void invoices? | yes, stamped VOID | You ("use recommendation") |
+| D-43 | 2026-09-23 | File size and types | 10 MB; PDF, JPEG, PNG, WEBP, DOCX, XLSX, CSV, TXT | You ("use recommendation") |
+| D-44 | 2026-09-23 | Logo storage | separate public-read bucket for logos only | You ("use recommendation") |
+| D-45 | 2026-09-23 | Profile photos | not in V1 (initials) | You ("use recommendation") |
+| D-46 | 2026-09-23 | Inviting a disabled member | accepting re-enables their membership | You ("use recommendation") |
+| D-47 | 2026-09-23 | Plan names, prices, currency, limits (users, client logins, customers, storage) | STILL OPEN — suggested shape: trial / basic / pro in PKR | OPEN — waiting for you |
+| D-48 | 2026-09-23 | Trial length | 14 days (changeable in platform settings) | You ("use recommendation") |
+| D-49 | 2026-09-23 | Timeline after expiry | read-only at once, may suspend after 30 days, never auto-delete | You ("use recommendation") |
+| D-50 | 2026-09-23 | Automated payment gateway | manual billing in V1 — ; evaluate local gateway / merchant of record later | You ("use recommendation") |
+| D-51 | 2026-09-23 | Dark mode | light only — Light only in V1 | You ("use recommendation") |
+| D-52 | 2026-09-23 | Product name, domain, brand colour | STILL OPEN — working name and neutral blue until then | OPEN — waiting for you |
+| D-53 | 2026-09-23 | Rate-limit method | small table in private schema | You ("use recommendation") |
+| D-54 | 2026-09-23 | Error monitoring service | Vercel logs only — ; add Sentry with paying customers | You ("use recommendation") |
+| D-55 | 2026-09-23 | CSV export in V1 | yes, finance lists + reports for allowed roles — Yes, max 10,000 rows | You ("use recommendation") |
+| D-56 | 2026-09-23 | Separate Supabase projects for dev and prod | yes | You ("use recommendation") |
+| D-57 | 2026-09-23 | Hosting region | Mumbai (`ap-south-1` / `bom1`) — verify availability | You ("use recommendation") |
+| D-58 | 2026-09-23 | Backups | Supabase Pro daily + monthly manual export | You ("use recommendation") |
+| D-59 | 2026-09-23 | Where database tests run | cloud dev project, rolled back | You ("use recommendation") |
+| D-60 | 2026-09-23 | Email / WhatsApp notifications | V2 | You ("use recommendation") |
+| D-61 | 2026-09-23 | Automated browser tests | small Playwright smoke suite in Step 23 | You ("use recommendation") |

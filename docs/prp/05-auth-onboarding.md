@@ -118,9 +118,9 @@ One server function, planned as `resolveHomePath(user)`, runs after login, after
 
 `/app/[orgSlug]/profile` (and `/platform/profile`):
 
-- Edit: full name, phone. (Profile photos: D-45 — recommended not in V1; initials are shown instead.)
+- Edit: full name, phone. (Profile photos: not in V1 — D-45; initials are shown instead.)
 - Change password.
-- Email change: D-39 (recommended V2).
+- Email change: V2 (D-39).
 - Shows: my email, my role in this organization, list of my organizations.
 - "Leave this organization" (not for OWNER — must transfer ownership first; not for CLIENT — per `02-roles-permissions.md`).
 
@@ -163,7 +163,7 @@ Errors: "This web name is already taken", "You can own at most N organizations �
    - plan limit for users / clients not reached (from Step 22),
    - the customer belongs to this organization (also enforced by the composite FK).
 3. Server creates a long random token (32 random bytes), stores **only its SHA-256 hash** in `invitations.token_hash`, `expires_at = now + 7 days` (D-23).
-4. Delivery (D-34, recommended):
+4. Delivery (D-34):
    - the invite link `NEXT_PUBLIC_SITE_URL/invite/<token>` is shown **once** with a "Copy link" button, so the inviter can send it by WhatsApp,
    - and, when an email provider is configured (D-33), an invitation email is sent from our server with the same link.
    With this choice Supabase's own "invite user" admin feature is **not** used, and admin-client use #2 in `03-architecture.md` is removed.
@@ -207,9 +207,9 @@ Errors: "This invitation was sent to another email address. Log out and log in w
 
 **Important limit:** Supabase's built-in email service is **only for testing**. It sends very few emails per hour and may refuse to send to addresses that are not members of your Supabase team. Before real customers use the software we must set up **custom SMTP** (a real email-sending service connected to Supabase Auth). Provider: D-33. The same provider sends invitation emails.
 
-## 16. Decisions raised in this file
+## 16. Decisions for this file (answered 2026-09-23 — "use recommendation")
 
-| # | Question | Recommended default | Why |
+| # | Question | Decision (answered 2026-09-23) | Why |
 |---|---|---|---|
 | D-33 | Email provider for production (custom SMTP + invitation emails) | **Resend** (alternatives: Brevo, Amazon SES, Postmark). | Easy setup with Supabase, free tier enough to start, simple API for invitation emails. Needs a domain you own for sending. |
 | D-34 | How invitations are delivered | **Copy-link (for WhatsApp) always + email through our provider once D-33 is set up.** Do not use Supabase's admin "invite user" feature. | Works from day one even without email setup; avoids using the secret key for invites. |

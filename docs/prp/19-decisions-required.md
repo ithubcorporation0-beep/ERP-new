@@ -1,8 +1,8 @@
 # 19 — Decisions Required
 
-> Every open question in the PRP, numbered D-01 … D-61, with the options and my recommended default.
-> You can answer each one with your choice, or simply "use your recommendation" (for one, a group, or all).
-> After you answer, the PRP files are updated, the `[DECISION REQUIRED]` / "D-xx → recommended" marks are removed, and each answer is recorded in `docs/DECISIONS.md`.
+> Every question raised in the PRP, numbered D-01 … D-61, with the options and the chosen answer.
+> **Status (2026-09-23):** you answered "yes" = **use the recommendation for all**. 59 decisions are answered; **2 are still open: D-47 (plans & prices, needed by Step 22) and D-52 (product name/domain/colour, needed by Step 24)**.
+> All PRP files were updated to match, and every answer is recorded in `docs/DECISIONS.md`. To change an answer later, say so — Claude will first list which files, tables and pages it affects.
 
 Groups:
 - **A. Blocks the database** — changes table design or security rules; needed before Step 8 (foundation) or before the step that creates those tables.
@@ -15,7 +15,7 @@ Groups:
 
 ## A. Blocks the database
 
-| # | Question | Options | Recommended default | Needed by | File |
+| # | Question | Options | Chosen (2026-09-23) | Needed by | File |
 |---|---|---|---|---|---|
 | D-01 | Can PLATFORM_ADMIN read an organization's business data (support)? | a) never · b) read-only, every view logged · c) only with the OWNER's time-limited permission | **a) Never in V1** (c later) | Step 8 | 02 |
 | D-06 | Can CLIENTs see tasks? | a) never · b) organization setting, off by default · c) always | **b) Setting, off by default**; title/status/due date only | Step 8 (settings column), 13 | 02 |
@@ -36,7 +36,7 @@ Groups:
 
 ## B. Blocks a later phase
 
-| # | Question | Options | Recommended default | Needed by | File |
+| # | Question | Options | Chosen (2026-09-23) | Needed by | File |
 |---|---|---|---|---|---|
 | D-02 | MANAGER's financial access | a) none · b) view invoices & payments · c) full like ACCOUNTANT | **b) View invoices & payments only**; no expenses or financial reports | Step 15 | 02 |
 | D-03 | ACCOUNTANT's access to projects/tasks | a) none · b) view only · c) full | **b) View only** | Step 13 | 02 |
@@ -61,10 +61,10 @@ Groups:
 | D-43 | File size and types | size: 5 / **10** / 25 MB; types: PDF, images, Office, CSV, TXT | **10 MB**; PDF, JPEG, PNG, WEBP, DOCX, XLSX, CSV, TXT | Step 18 | 10 |
 | D-44 | Logo storage | a) separate public-read bucket for logos only · b) private + signed links | **a)** | Step 18 | 10 |
 | D-46 | Inviting a disabled member | a) accepting re-enables their membership · b) refuse | **a)** | Step 11 | 05 |
-| D-47 | Plan names, prices, currency, limits (users, client logins, customers, storage) | **Only you can decide** | Suggested shape: trial / basic / pro in PKR; you give the numbers | Step 22 | 12 |
+| D-47 | Plan names, prices, currency, limits (users, client logins, customers, storage) | **Only you can decide** | **STILL OPEN** — suggested shape: trial / basic / pro in PKR | Step 22 | 12 |
 | D-48 | Trial length | 7 / **14** / 30 days | **14 days** (changeable in platform settings) | Step 22 | 12 |
 | D-49 | Timeline after expiry | a) read-only at once, may suspend after 30 days, never auto-delete · b) suspend at once | **a)** | Step 22 | 12 |
-| D-52 | Product name, domain, brand colour | **Only you can decide** | Working name until then; neutral blue | Step 5 (working name), Step 24 (final) | 13, 14 |
+| D-52 | Product name, domain, brand colour | **Only you can decide** | **STILL OPEN** — working name and neutral blue until then | Step 5 (working name), Step 24 (final) | 13, 14 |
 | D-55 | CSV export in V1 | a) yes, finance lists + reports for allowed roles · b) no | **a) Yes**, max 10,000 rows | Step 20 | 16 |
 | D-56 | Separate Supabase projects for dev and prod | a) yes · b) one project | **a) Yes** | Step 7 (dev) / 24 (prod) | 17 |
 | D-57 | Hosting region | Supabase region + Vercel function region | **Mumbai (`ap-south-1` / `bom1`)** — verify availability | Step 7 | 17 |
@@ -72,7 +72,7 @@ Groups:
 
 ## C. Can wait
 
-| # | Question | Options | Recommended default | Needed by | File |
+| # | Question | Options | Chosen (2026-09-23) | Needed by | File |
 |---|---|---|---|---|---|
 | D-04 | Subdomains per organization later | a) keep `/app/[orgSlug]` · b) `slug.yourdomain.com` in V2 | **a) Keep paths**; revisit after launch | V2 | 01 |
 | D-26 | Interface language | a) English only · b) + Urdu | **a) English in V1** | V2 | 01 |
@@ -94,6 +94,6 @@ Groups:
 ## Count
 
 - A. Blocks the database: **16**
-- B. Blocks a later phase: **31** (2 of them — D-47 and D-52 — need your own input; the others have a recommendation)
+- B. Blocks a later phase: **31** (29 answered; **D-47 and D-52 still open**)
 - C. Can wait: **14**
-- Total: **61**
+- Total: **61** (59 answered, 2 open)

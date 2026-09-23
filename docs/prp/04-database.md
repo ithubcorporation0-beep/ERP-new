@@ -721,9 +721,9 @@ The complete list of database functions (including `void_invoice`, `duplicate_in
 
 ---
 
-## 8. Decisions raised in this file
+## 8. Decisions for this file (answered 2026-09-23 — "use recommendation")
 
-| # | Question | Recommended default | Why |
+| # | Question | Decision (answered 2026-09-23) | Why |
 |---|---|---|---|
 | D-10 | Tax model | Optional **tax % per invoice line** (default 0), organization sets a default rate and a tax label. **No tax rule is built in.** | Works for "no tax", one flat tax, or items with different rates, without the software assuming any law. |
 | D-11 | Discount model | **Discount as an amount per invoice line** (default 0), tax calculated after discount. | Simple, exact math; a whole-invoice discount spread over lines with different tax rates is confusing. |

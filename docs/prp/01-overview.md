@@ -121,11 +121,11 @@ The software puts all of this in one place, with the right access for each perso
 | Reports on screen + CSV export (D-55) | ✅ | Scheduled/emailed reports |
 | — | — | Recurring invoices, quotes/estimates, PDF emailing, client portal chat, stock control, AI assistant |
 
-## 9. Decisions raised in this file
+## 9. Decisions for this file (answered 2026-09-23 — "use recommendation")
 
 All decisions are collected and grouped in `19-decisions-required.md` (Step 4). Raised or referenced here:
 
-| # | Question | Recommended default | Why |
+| # | Question | Decision (answered 2026-09-23) | Why |
 |---|---|---|---|
 | D-04 | Subdomains per organization in later versions? | Keep path-based URLs in V1; revisit after launch. | Subdomains need wildcard DNS and more complex login cookies; not needed to prove the product. |
 | D-26 | Interface language | English only in V1. | Translating every screen doubles text work; add Urdu once screens are stable. |

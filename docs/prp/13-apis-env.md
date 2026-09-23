@@ -14,7 +14,7 @@ Only services that a real V1 feature needs are included.
 | Service | Used for | Keys needed | When |
 |---|---|---|---|
 | **Supabase** (Database, Auth, Storage) | Everything: data, login, files | Project URL, publishable key, secret key | Step 7 |
-| **Email provider with SMTP** (D-33, recommended Resend) | (a) Supabase Auth emails in production (signup confirmation, password reset) via custom SMTP; (b) invitation emails from our server | SMTP credentials (entered in the Supabase dashboard, not in our code) + API key for our server | Supabase built-in email for testing until then; **required before real customers** (Step 24). Invitation emails can start as soon as D-33 is set up (copy-link works before that — D-34) |
+| **Email provider with SMTP** (D-33: Resend) | (a) Supabase Auth emails in production (signup confirmation, password reset) via custom SMTP; (b) invitation emails from our server | SMTP credentials (entered in the Supabase dashboard, not in our code) + API key for our server | Supabase built-in email for testing until then; **required before real customers** (Step 24). Invitation emails can start as soon as D-33 is set up (copy-link works before that — D-34) |
 
 ### 1.2 OPTIONAL FOR V1
 
@@ -93,11 +93,11 @@ Until the production Supabase project exists (Step 24), Production also points t
 | API settings → **Exposed schemas** | `public` only (never `private`) | same |
 | Storage buckets | Created by migrations, not by hand | same |
 
-## 4. Decisions raised in this file
+## 4. Decisions for this file (answered 2026-09-23 — "use recommendation")
 
-| # | Question | Recommended default | Why |
+| # | Question | Decision (answered 2026-09-23) | Why |
 |---|---|---|---|
-| D-52 | Product name, domain and brand colour | **You decide** before Step 24. Until then `NEXT_PUBLIC_APP_NAME` holds a working name and the default colour is neutral blue. | The name appears in emails, page titles and the domain; not needed to build features. |
+| D-52 | Product name, domain and brand colour | **STILL OPEN — you decide before Step 24.** Until then `NEXT_PUBLIC_APP_NAME` holds a working name and the default colour is neutral blue. | The name appears in emails, page titles and the domain; not needed to build features. |
 | D-53 | How to rate-limit our own actions (invites, resends, uploads) | **Small table in the `private` database schema** that counts attempts per user/IP per time window; Supabase Auth's built-in limits for login/signup/reset. | No extra paid service; enough for V1 traffic. |
 | D-54 | Error monitoring service | **Not in V1**; use Vercel logs. Add Sentry when there are paying customers. | Fewer accounts and keys to manage at the start. |
 

@@ -123,7 +123,7 @@ Because the `documents` RLS runs inside this check, all role/client rules (inclu
 
 - Uploaded in `/settings` by OWNER/ADMIN (square-ish image, ≤ 1 MB, PNG/JPEG/WEBP).
 - Same prepare/confirm flow, into `org-logos/{organization_id}/{uuid}.ext`; `organizations.logo_path` is updated; the old logo file is deleted.
-- **D-44 recommended: public-read bucket** for logos only. Why: the logo appears in the header for every member, on printed invoices, and later in emails, where signed links would expire. A logo is not secret, and the random file name means nobody can list or guess other organizations' logos.
+- **Decided (D-44): public-read bucket** for logos only. Why: the logo appears in the header for every member, on printed invoices, and later in emails, where signed links would expire. A logo is not secret, and the random file name means nobody can list or guess other organizations' logos.
 - Upload/replace/delete in `org-logos` is still protected by storage policies (only OWNER/ADMIN of the organization in the first folder).
 - If no logo: the organization's initials are shown.
 
@@ -138,9 +138,9 @@ Because the `documents` RLS runs inside this check, all role/client rules (inclu
 7. Upload into another organization's folder with a hand-made request → refused by the insert policy.
 8. Signed URL stops working after 5 minutes.
 
-## 11. Decisions raised in this file
+## 11. Decisions for this file (answered 2026-09-23 — "use recommendation")
 
-| # | Question | Recommended default | Why |
+| # | Question | Decision (answered 2026-09-23) | Why |
 |---|---|---|---|
 | D-43 | File size and types | **10 MB**; PDF, JPEG, PNG, WEBP, DOCX, XLSX, CSV, TXT. | Covers photos, scans and office files while blocking file types that can carry scripts. |
 | D-44 | Logo storage | **Separate public-read bucket for logos only**; all other files private. | Logos must show on printed invoices/emails without expiring links; they are not secret. |

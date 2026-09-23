@@ -30,11 +30,11 @@ Your computer ──git push──► GitHub ──automatic──► Vercel bui
 | Preview | Vercel preview links | `saas-app-dev` | Testing each branch |
 | Production | Your domain (until then `your-app.vercel.app`) | `saas-app-prod` (from Step 24; until then dev) | Real customers |
 
-**D-56 — separate Supabase projects for development and production: recommended YES.** Test data, test users and experimental migrations never touch real customers' data, and a mistake in development cannot delete production data.
+**D-56 — separate Supabase projects for development and production: YES.** Test data, test users and experimental migrations never touch real customers' data, and a mistake in development cannot delete production data.
 
 Environment variables per environment: `13-apis-env.md` §2.2. Supabase Auth URL settings per project: `13-apis-env.md` §3.
 
-**D-57 — region:** recommended the Supabase region **closest to Pakistan** that is offered when creating the project (at the time of writing that is **Mumbai / `ap-south-1`**; verify in the dropdown), and Vercel Functions set to the matching region (**Mumbai, `bom1`**) in Vercel → Project → Settings → Functions. Same region = fast database calls.
+**D-57 — region:** the Supabase region **closest to Pakistan** that is offered when creating the project (at the time of writing that is **Mumbai / `ap-south-1`**; verify in the dropdown), and Vercel Functions set to the matching region (**Mumbai, `bom1`**) in Vercel → Project → Settings → Functions. Same region = fast database calls.
 
 ## 3. Branches and releases
 
@@ -68,7 +68,7 @@ Environment variables per environment: `13-apis-env.md` §2.2. Supabase Auth URL
 ## 6. Backups
 
 - **Supabase Pro** includes automatic daily backups kept for 7 days (restorable from the dashboard). Point-in-time recovery (restore to any minute) is a paid add-on — later if needed.
-- **D-58 recommended:** Pro daily backups **plus** a monthly manual export (`npx supabase db dump` of the production database, stored safely off-line, encrypted), and a copy of Storage files for important customers when needed.
+- **Decided (D-58):** Pro daily backups **plus** a monthly manual export (`npx supabase db dump` of the production database, stored safely off-line, encrypted), and a copy of Storage files for important customers when needed.
 - The free plan should not be relied on for backups (check current Supabase plan details).
 - **Test a restore** once before launch (restore a backup into a spare project and open it).
 - Code is backed up by GitHub.
@@ -101,9 +101,9 @@ Environment variables per environment: `13-apis-env.md` §2.2. Supabase Auth URL
 - Supabase usage emails (approaching limits).
 - Error monitoring service later (D-54).
 
-## 10. Decisions raised in this file
+## 10. Decisions for this file (answered 2026-09-23 — "use recommendation")
 
-| # | Question | Recommended default | Why |
+| # | Question | Decision (answered 2026-09-23) | Why |
 |---|---|---|---|
 | D-56 | Separate Supabase projects for development and production | **Yes** (`saas-app-dev` and `saas-app-prod`). | Test data and mistakes never touch real customers. |
 | D-57 | Hosting region | **Supabase Mumbai (`ap-south-1`) + Vercel Functions Mumbai (`bom1`)** — verify availability. | Closest to users in Pakistan; same region keeps the app fast. |

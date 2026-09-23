@@ -55,7 +55,7 @@ Worked example (tax 0% unless shown):
 
 ### 2.3 Tax
 
-- **No tax rule is assumed.** D-10 recommended design: an optional tax % per line, an organization-wide default rate (starts at **0**) and a tax label (e.g. "Sales Tax") printed on invoices.
+- **No tax rule is assumed.** Decided design (D-10): an optional tax % per line, an organization-wide default rate (starts at **0**) and a tax label (e.g. "Sales Tax") printed on invoices.
 - Tax registration number (free text) is printed if filled in settings.
 - Tax-inclusive prices, withholding tax, multiple taxes per line, tax reports for filing: **not in V1** (future, only if you define the rules).
 
@@ -92,7 +92,7 @@ draft ──issue──► sent ──payment──► partially_paid ──paym
 | Record payment | ❌ | ✅ (not `paid`) | ❌ |
 | Print view | ✅ (watermark "DRAFT") | ✅ | ✅ (watermark "VOID") |
 
-**D-31 recommended:** issued invoices are never edited. Correct a mistake by **Void + Duplicate as new draft** (the new invoice gets a new number). Reason: what the customer received never silently changes, and the history is complete.
+**Decided (D-31):** issued invoices are never edited. Correct a mistake by **Void + Duplicate as new draft** (the new invoice gets a new number). Reason: what the customer received never silently changes, and the history is complete.
 
 ## 5. Invoice numbering
 
@@ -188,7 +188,7 @@ All calculated in the database with date filters; void invoices, void expenses a
 
 ## 10. Printing / PDF
 
-**D-40 recommended:** a clean **print view** page (`/invoices/[id]/print`) with organization logo, details, tax label and registration number, bill-to snapshot, lines, totals, payments, notes, terms. The user prints or uses the browser's "Save as PDF". No server-generated PDF files and no emailing invoices in V1.
+**Decided (D-40):** a clean **print view** page (`/invoices/[id]/print`) with organization logo, details, tax label and registration number, bill-to snapshot, lines, totals, payments, notes, terms. The user prints or uses the browser's "Save as PDF". No server-generated PDF files and no emailing invoices in V1.
 
 ## 11. Automated tests (Step 15/16)
 
@@ -200,9 +200,9 @@ All calculated in the database with date filters; void invoices, void expenses a
 - Payments: partial → `partially_paid`; full → `paid`; over balance → refused; reversal → balance and status restored; void with payments → refused.
 - Client of customer A cannot read invoices/payments of customer B; clients never see drafts.
 
-## 12. Decisions raised in this file
+## 12. Decisions for this file (answered 2026-09-23 — "use recommendation")
 
-| # | Question | Recommended default | Why |
+| # | Question | Decision (answered 2026-09-23) | Why |
 |---|---|---|---|
 | D-40 | Invoice PDF and emailing | **Print view + browser "Save as PDF"**; no emailing of invoices in V1. | No extra PDF library or email volume; businesses can send the PDF by WhatsApp. |
 | D-41 | Basis of the "Income vs expenses" report | **Cash basis** (money received − expenses paid), with "Invoiced" shown next to it. | Easiest for small businesses to understand and matches their bank/cash; not a formal accounting statement. |

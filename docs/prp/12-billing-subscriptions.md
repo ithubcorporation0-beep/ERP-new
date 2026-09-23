@@ -27,7 +27,7 @@ All names, prices and numbers are **D-47** — you decide them. The table below 
 ## 2. Trial
 
 - Every new organization starts on the `trial` plan with status `trialing` (created by `create_organization()` once Step 22 exists; existing organizations get a trial row in the Step 22 migration).
-- Length: **D-48** — recommended **14 days** (setting `default_trial_days` in `platform_settings`, so it can be changed without code).
+- Length: **14 days** (D-48) (setting `default_trial_days` in `platform_settings`, so it can be changed without code).
 - During the last 7 days the OWNER sees a banner "Your trial ends on 30 Sep — how to pay" and one `subscription_expiring` notification.
 
 ## 3. Subscription statuses and what users can do
@@ -42,7 +42,7 @@ All names, prices and numbers are **D-47** — you decide them. The table below 
 
 **Checked live from dates.** `private.org_writable(org)` returns true only if (`trialing` and `trial_ends_at` > now) or (`active` and `current_period_end` ≥ today in the organization timezone). No background job has to "flip" statuses for access to be correct; the stored `status` is updated when PLATFORM_ADMIN acts or on the next platform-dashboard load, only for display.
 
-Timeline after expiry (D-49, recommended):
+Timeline after expiry (D-49):
 
 ```
 period end ──► read-only immediately (banner for everyone, payment instructions for OWNER)
@@ -95,12 +95,12 @@ Flow:
 
 Organizations read this through `get_my_subscription(org)` (never the tables directly), so platform notes stay private.
 
-## 7. Decisions raised in this file
+## 7. Decisions for this file (answered 2026-09-23 — "use recommendation")
 
-| # | Question | Recommended default | Why |
+| # | Question | Decision (answered 2026-09-23) | Why |
 |---|---|---|---|
 | D-25 | (from `02`) What happens when a subscription expires? | **Read-only** until renewed. | Businesses keep access to their records; clear reason to pay. |
-| D-47 | Plan names, prices, currency and limits | **You decide.** Suggested shape: trial, basic, pro, priced in PKR, limits on users, client logins, customers, storage. | Pricing is a business decision; the software only needs the numbers. |
+| D-47 | Plan names, prices, currency and limits | **STILL OPEN — you decide before Step 22.** Suggested shape: trial, basic, pro, priced in PKR, limits on users, client logins, customers, storage. | Pricing is a business decision; the software only needs the numbers. |
 | D-48 | Trial length | **14 days**, changeable in platform settings. | Long enough to set up and try invoicing; short enough to convert. |
 | D-49 | Timeline after expiry | **Read-only at once; PLATFORM_ADMIN may suspend after 30 days unpaid; never auto-delete.** | Fair to businesses, keeps the decision to suspend with a human in V1. |
 | D-50 | Automated payment gateway (future) | **Manual in V1.** Later: evaluate a Pakistani gateway (bank/wallet-based) or a merchant-of-record service that pays out to Pakistan — verify availability then. | Avoids integration work and legal setup before there are paying customers. |

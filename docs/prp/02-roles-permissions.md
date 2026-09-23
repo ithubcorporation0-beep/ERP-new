@@ -83,7 +83,7 @@ Legend for "Data": **V** = view, **C** = create, **U** = update, **D** = delete/
 | Dashboard | Active projects, tasks by status, overdue tasks, tasks per employee, projects due soon. |
 | Pages | Dashboard, Customers, Team (read-only list), Projects, Tasks, Services/Products (view), Invoices & Payments (view — D-02), Documents, Reports (work reports), Notifications, My Profile. |
 | Data | V/C/U/archive customers, projects, tasks, task comments, project members. V services/products. |
-| Financial access | **D-02.** Recommended: **view** invoices and payments only (to answer "has this customer paid?"); no creating/editing invoices or payments, no expenses, no financial reports. |
+| Financial access | **Decided (D-02):** **view** invoices and payments only (to answer "has this customer paid?"); no creating/editing invoices or payments, no expenses, no financial reports. |
 | User management | View team members (needed to assign work). Cannot invite (D-09) or change roles. |
 | Reporting | Work reports (projects, tasks, workload). |
 | Settings | None (own profile only). |
@@ -96,8 +96,8 @@ Legend for "Data": **V** = view, **C** = create, **U** = update, **D** = delete/
 | Purpose | Manages invoices, payments, expenses and financial reports. |
 | Dashboard | Money received this month, unpaid and overdue invoices, expenses this month, top customers by balance. |
 | Pages | Dashboard, Customers, Projects & Tasks (view — D-03), Services/Products, Invoices, Payments, Expenses, Expense categories, Documents (finance-related), Reports (financial), Notifications, My Profile. |
-| Data | V/C/U/D invoices (drafts deleted, issued ones voided), invoice items, payments (record / reverse), expenses, expense categories, services/products. V customers; C/U customers — D-08 (recommended: yes). |
-| Projects/tasks | **D-03.** Recommended: **view only** (to know what to invoice); no creating or changing. |
+| Data | V/C/U/D invoices (drafts deleted, issued ones voided), invoice items, payments (record / reverse), expenses, expense categories, services/products. V customers; C/U customers (D-08). |
+| Projects/tasks | **Decided (D-03):** **view only** (to know what to invoice); no creating or changing. |
 | Financial access | Full (except billing of the SaaS subscription). |
 | User management | None. |
 | Reporting | Financial reports (revenue, receivables, expenses, profit & loss summary). |
@@ -112,7 +112,7 @@ Legend for "Data": **V** = view, **C** = create, **U** = update, **D** = delete/
 | Dashboard | My tasks due today / this week / overdue, my projects. |
 | Pages | Dashboard, My Tasks, My Projects, My Documents, Notifications, My Profile. |
 | Data | V tasks **assigned to them**; U status of those tasks; C/U/D own comments on those tasks. V projects **they are a member of** (via `project_members`). V basic customer info (name, phone, address) of those projects — D-05. Upload documents to their tasks/projects — D-22. |
-| Create tasks | **D-07.** Recommended: **no** (managers plan work; keeps "my tasks" clean). |
+| Create tasks | **Decided (D-07):** **no** (managers plan work; keeps "my tasks" clean). |
 | Financial access | None. No prices, invoices, payments or expenses. |
 | User management | None. Sees names of people on the same projects only. |
 | Reporting | None (own dashboard only). |
@@ -128,8 +128,8 @@ Legend for "Data": **V** = view, **C** = create, **U** = update, **D** = delete/
 | Dashboard | My active projects, my unpaid balance, recent invoices, recent payments. |
 | Pages | Dashboard, My Profile, My Projects, My Tasks (only if allowed — D-06), My Invoices, My Payments, My Documents, Notifications. |
 | Data | V **only records of their own customer**: projects, invoices (issued ones — never drafts), payments (not reversed ones' internal notes), documents marked "visible to client". |
-| Tasks | **D-06.** Recommended: an organization setting "Clients can see tasks", **off by default**. When on, clients see task title, status and due date on their projects — never comments or who is assigned. |
-| Upload files | **D-21.** Recommended: **no** in V1. |
+| Tasks | **Decided (D-06):** an organization setting "Clients can see tasks", **off by default**. When on, clients see task title, status and due date on their projects — never comments or who is assigned. |
+| Upload files | **Decided (D-21):** **no** in V1. |
 | Financial access | Own invoices and payments only. |
 | User management / Reporting / Settings / Billing | None (own profile only). |
 
@@ -138,7 +138,7 @@ Legend for "Data": **V** = view, **C** = create, **U** = update, **D** = delete/
 ## 3. Permission matrix
 
 Legend:
-**✅** = yes (whole organization) · **👁** = view only · **Own** = only their own record · **Assigned** = only items assigned to them / projects they are a member of · **Linked** = only records of their linked customer · **❌** = no · **D-xx** = open decision (the recommended default is shown after it).
+**✅** = yes (whole organization) · **👁** = view only · **Own** = only their own record · **Assigned** = only items assigned to them / projects they are a member of · **Linked** = only records of their linked customer · **❌** = no · **(D-xx)** = the decision this cell comes from (all answered 2026-09-23 — see `19-decisions-required.md`).
 
 Platform Admin column: the platform admin has **no rights inside an organization** unless they are also a member of it. ❌ in that column means "not through the platform role".
 
@@ -151,11 +151,11 @@ Platform Admin column: the platform admin has **no rights inside an organization
 | Manage plans | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Activate / extend a subscription (manual billing) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Publish platform announcements | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Read platform announcements | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | D-30 → ❌ |
+| Read platform announcements | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ (D-30) |
 | Disable / enable any user account | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Platform settings | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Platform audit log | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Read an organization's business data | D-01 → ❌ | — | — | — | — | — | — |
+| Read an organization's business data | ❌ (D-01) | — | — | — | — | — | — |
 
 ### 3.2 Organization, subscription, settings
 
@@ -177,8 +177,8 @@ Platform Admin column: the platform admin has **no rights inside an organization
 |---|---|---|---|---|---|---|---|
 | View team member list | ❌ | ✅ | ✅ | 👁 | ❌ (sees names on tasks only) | ❌ (co-members on own projects only) | ❌ |
 | Invite ADMIN | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Invite MANAGER / ACCOUNTANT / EMPLOYEE | ❌ | ✅ | ✅ | D-09 → ❌ | ❌ | ❌ | ❌ |
-| Invite CLIENT (linked to a customer) | ❌ | ✅ | ✅ | D-09 → ❌ | ❌ | ❌ | ❌ |
+| Invite MANAGER / ACCOUNTANT / EMPLOYEE | ❌ | ✅ | ✅ | ❌ (D-09) | ❌ | ❌ | ❌ |
+| Invite CLIENT (linked to a customer) | ❌ | ✅ | ✅ | ❌ (D-09) | ❌ | ❌ | ❌ |
 | Resend / cancel invitation | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
 | Change a member's role | ❌ | ✅ (not own) | ✅ (not Owner, not own) | ❌ | ❌ | ❌ | ❌ |
 | Disable / re-enable a member | ❌ | ✅ (not own) | ✅ (not Owner, not own) | ❌ | ❌ | ❌ | ❌ |
@@ -190,21 +190,21 @@ Platform Admin column: the platform admin has **no rights inside an organization
 
 | Permission | Platform Admin | Owner | Admin | Manager | Accountant | Employee | Client |
 |---|---|---|---|---|---|---|---|
-| View customers | ❌ | ✅ | ✅ | ✅ | ✅ | D-05 → 👁 basic info, Assigned | Linked (own record) |
-| Create / edit customers | ❌ | ✅ | ✅ | ✅ | D-08 → ✅ | ❌ | ❌ |
+| View customers | ❌ | ✅ | ✅ | ✅ | ✅ | 👁 basic info, Assigned (D-05) | Linked (own record) |
+| Create / edit customers | ❌ | ✅ | ✅ | ✅ | ✅ (D-08) | ❌ | ❌ |
 | Archive / restore customers | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
 
 ### 3.5 Projects & tasks
 
 | Permission | Platform Admin | Owner | Admin | Manager | Accountant | Employee | Client |
 |---|---|---|---|---|---|---|---|
-| View projects | ❌ | ✅ | ✅ | ✅ | D-03 → 👁 | Assigned | Linked |
+| View projects | ❌ | ✅ | ✅ | ✅ | 👁 (D-03) | Assigned | Linked |
 | Create / edit / archive projects | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
 | Add / remove project members | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
-| View tasks | ❌ | ✅ | ✅ | ✅ | D-03 → 👁 | Assigned | D-06 → ❌ (off by default) |
-| Create / edit / archive tasks, assign people | ❌ | ✅ | ✅ | ✅ | ❌ | D-07 → ❌ | ❌ |
+| View tasks | ❌ | ✅ | ✅ | ✅ | 👁 (D-03) | Assigned | ❌ (off by default) (D-06) |
+| Create / edit / archive tasks, assign people | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ (D-07) | ❌ |
 | Change task status | ❌ | ✅ | ✅ | ✅ | ❌ | Assigned | ❌ |
-| View task comments | ❌ | ✅ | ✅ | ✅ | D-03 → 👁 | Assigned | ❌ |
+| View task comments | ❌ | ✅ | ✅ | ✅ | 👁 (D-03) | Assigned | ❌ |
 | Add comments | ❌ | ✅ | ✅ | ✅ | ❌ | Assigned | ❌ |
 | Edit / delete a comment | ❌ | Own + delete any | Own + delete any | Own | ❌ | Own | ❌ |
 
@@ -219,13 +219,13 @@ Platform Admin column: the platform admin has **no rights inside an organization
 
 | Permission | Platform Admin | Owner | Admin | Manager | Accountant | Employee | Client |
 |---|---|---|---|---|---|---|---|
-| View invoices | ❌ | ✅ | ✅ | D-02 → 👁 | ✅ | ❌ | Linked (issued only, never drafts) |
-| Create / edit **draft** invoices | ❌ | ✅ | ✅ | D-02 → ❌ | ✅ | ❌ | ❌ |
+| View invoices | ❌ | ✅ | ✅ | 👁 (D-02) | ✅ | ❌ | Linked (issued only, never drafts) |
+| Create / edit **draft** invoices | ❌ | ✅ | ✅ | ❌ (D-02) | ✅ | ❌ | ❌ |
 | Delete a **draft** invoice | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
 | Issue (send) an invoice — gives it a number | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
 | Void an issued invoice (with reason) | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
-| Print / view invoice page | ❌ | ✅ | ✅ | D-02 → ✅ | ✅ | ❌ | Linked |
-| View payments | ❌ | ✅ | ✅ | D-02 → 👁 | ✅ | ❌ | Linked |
+| Print / view invoice page | ❌ | ✅ | ✅ | ✅ (D-02) | ✅ | ❌ | Linked |
+| View payments | ❌ | ✅ | ✅ | 👁 (D-02) | ✅ | ❌ | Linked |
 | Record a payment | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
 | Reverse a payment (with reason) | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
 | Delete a payment | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -234,8 +234,8 @@ Platform Admin column: the platform admin has **no rights inside an organization
 
 | Permission | Platform Admin | Owner | Admin | Manager | Accountant | Employee | Client |
 |---|---|---|---|---|---|---|---|
-| View expenses | ❌ | ✅ | ✅ | D-02 → ❌ | ✅ | ❌ | ❌ |
-| Record / edit expenses | ❌ | ✅ | ✅ | ❌ | ✅ | D-20 → ❌ | ❌ |
+| View expenses | ❌ | ✅ | ✅ | ❌ (D-02) | ✅ | ❌ | ❌ |
+| Record / edit expenses | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ (D-20) | ❌ |
 | Void an expense (with reason) | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
 | Manage expense categories | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
 
@@ -246,7 +246,7 @@ A person can see a document only if they can see the record it is attached to (c
 | Permission | Platform Admin | Owner | Admin | Manager | Accountant | Employee | Client |
 |---|---|---|---|---|---|---|---|
 | View / download documents | ❌ | ✅ | ✅ | ✅ (not on expenses) | ✅ (customers, invoices, expenses; projects/tasks 👁 per D-03) | Assigned | Linked + "visible to client" only |
-| Upload documents | ❌ | ✅ | ✅ | ✅ customers/projects/tasks | ✅ customers/invoices/expenses | D-22 → Assigned | D-21 → ❌ |
+| Upload documents | ❌ | ✅ | ✅ | ✅ customers/projects/tasks | ✅ customers/invoices/expenses | Assigned (D-22) | ❌ (D-21) |
 | Mark document visible to client | ❌ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
 | Delete documents | ❌ | ✅ | ✅ | Own uploads | Own uploads (not on issued invoices / expenses) | Own uploads | ❌ |
 | Upload organization logo | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
@@ -256,11 +256,11 @@ A person can see a document only if they can see the record it is attached to (c
 | Permission | Platform Admin | Owner | Admin | Manager | Accountant | Employee | Client |
 |---|---|---|---|---|---|---|---|
 | Own dashboard | ✅ (platform) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Work reports (projects, tasks, workload) | ❌ | ✅ | ✅ | ✅ | D-03 → 👁 | ❌ | ❌ |
-| Financial reports (revenue, receivables, expenses, P&L summary) | ❌ | ✅ | ✅ | D-02 → ❌ | ✅ | ❌ | ❌ |
+| Work reports (projects, tasks, workload) | ❌ | ✅ | ✅ | ✅ | 👁 (D-03) | ❌ | ❌ |
+| Financial reports (revenue, receivables, expenses, P&L summary) | ❌ | ✅ | ✅ | ❌ (D-02) | ✅ | ❌ | ❌ |
 | Own statement (my invoices, payments, balance) | ❌ | — | — | — | — | — | Linked |
 | Read own notifications / mark read | Own | Own | Own | Own | Own | Own | Own |
-| View organization activity log | D-01 → ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| View organization activity log | ❌ (D-01) | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
 | Edit or delete activity log entries | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ---
@@ -272,14 +272,14 @@ A person can see a document only if they can see the record it is attached to (c
 3. **Disabled member** (`memberships.status = 'disabled'`): loses all access to that organization immediately, but their name stays on old tasks, comments and logs.
 4. **Disabled account** (`profiles.status = 'disabled'`, set by PLATFORM_ADMIN): the person cannot use any organization.
 5. **Suspended organization** (`organizations.status = 'suspended'`): nobody in it (including OWNER) can open its data; they see an "organization suspended" page.
-6. **Expired subscription**: behaviour decided in `12-billing-subscriptions.md` (D-25; recommended: read-only).
+6. **Expired subscription**: behaviour decided in `12-billing-subscriptions.md` (D-25: read-only).
 7. Hiding a button in the screen is **never** the protection. Every permission above is checked on the server **and** in the database (see `03-architecture.md` and `06-authorization-rls.md`).
 
 ---
 
-## 5. Decisions raised in this file
+## 5. Decisions for this file (answered 2026-09-23 — "use recommendation")
 
-| # | Question | Recommended default | Why |
+| # | Question | Decision (answered 2026-09-23) | Why |
 |---|---|---|---|
 | D-01 | Can PLATFORM_ADMIN read an organization's business data for support? (none / read-only with audit log / only with the organization's permission) | **None in V1.** Later: read-only access only after the OWNER grants time-limited permission, with every view logged. | Businesses trust the platform more; fewer ways for data to leak; support can be done by screen-sharing in V1. |
 | D-02 | MANAGER's financial access | **View invoices and payments only.** No creating/editing invoices or payments, no expenses, no financial reports. | Managers need to know whether a customer paid before starting more work, but money changes belong to the ACCOUNTANT/OWNER. |
