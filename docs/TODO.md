@@ -12,7 +12,8 @@
 - [ ] D-52 — product name, domain, brand colour (before Step 24; working name is fine until then)
 
 ## Stage 2 — Setup
-- [ ] STEP 5 — Project setup + GitHub
+- [x] STEP 5 — Project setup (app created, lint + build pass)
+- [ ] STEP 5 — GitHub: create `main` branch and make it the default (you)
 - [ ] STEP 6 — First Vercel deployment
 - [ ] STEP 7 — Connect Supabase
 

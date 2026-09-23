@@ -147,8 +147,8 @@ Rule 11 of `CLAUDE.md`: every package is announced before it is installed. Plann
 
 | Package | What it is for | Step |
 |---|---|---|
-| `next`, `react`, `react-dom`, `typescript`, `tailwindcss`, `eslint` | The base app (installed by `create-next-app`) | 5 |
-| shadcn/ui CLI (`npx shadcn`) + the packages it adds (`radix-ui` parts, `class-variance-authority`, `clsx`, `tailwind-merge`, `lucide-react` icons) | UI components | 5 |
+| `next` 16, `react` 19, `react-dom`, `typescript`, `tailwindcss` 4, `eslint` | The base app (installed by `create-next-app`) | 5 ✅ installed |
+| shadcn/ui (preset "radix-nova") + the packages it adds: `shadcn` (shared shadcn styles), `radix-ui` (accessible building blocks), `class-variance-authority` (button/badge style variants), `cn` (merges CSS class names — shadcn's replacement for `clsx` + `tailwind-merge`), `lucide-react` (icons), `tw-animate-css` (small animations) | UI components | 5 ✅ installed |
 | `sonner` | Toast pop-ups (shadcn's toast component) | 5/9 |
 | `@supabase/ssr`, `@supabase/supabase-js` | Talking to Supabase with cookie sessions | 7 |
 | `server-only` | Makes the build fail if server code is imported into the browser | 7 |

@@ -3,7 +3,7 @@
 Last updated: 2026-09-23
 
 ## Current stage
-STAGE 1 — THE PLAN is complete. Next: STAGE 2 — SETUP.
+STAGE 2 — SETUP. The Next.js app exists (Step 5 done).
 
 ## Done
 - [x] Rules saved in `CLAUDE.md`
@@ -15,9 +15,10 @@ STAGE 1 — THE PLAN is complete. Next: STAGE 2 — SETUP.
 - [x] STEP 3 — PRP batch C: `11-notifications-audit.md`, `12-billing-subscriptions.md`, `13-apis-env.md`, `14-ui-ux.md`, `15-folder-structure.md`, `16-security-performance-testing.md`, `17-deployment.md` (+ cross-file consistency fixes in 01–08)
 - [x] STEP 4 (part 1) — `18-phases.md`, `19-decisions-required.md`, full consistency review of all PRP files
 - [x] STEP 4 (part 2) — decisions answered ("use recommendation" for all); PRP files updated; answers logged in `DECISIONS.md`
+- [x] STEP 5 — Next.js 16 app created in this folder (TypeScript, App Router, Tailwind 4, ESLint, `src/`), shadcn/ui (Radix, Nova preset), home page, 404 page, error page, `.gitignore` (blocks `.env*` except `.env.example`), `.env.example`, `README.md`. `npm run lint` and `npm run build` pass.
 
 ## Next step
-STEP 5 — Project setup + GitHub (create the Next.js app in this folder). Waiting for you to type "continue".
+Finish Step 5 on GitHub (create the `main` branch — see ACTION REQUIRED in the chat), then STEP 6 — first Vercel deployment. Waiting for you.
 
 ## Open decisions so far
 59 of 61 answered. Still open: **D-47** (plans, prices, limits — needed by Step 22) and **D-52** (product name, domain, brand colour — needed by Step 24).

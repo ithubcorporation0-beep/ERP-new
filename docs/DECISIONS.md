@@ -100,3 +100,13 @@ You replied "yes" to the decision list = use Claude's recommendation for every d
 | D-59 | 2026-09-23 | Where database tests run | cloud dev project, rolled back | You ("use recommendation") |
 | D-60 | 2026-09-23 | Email / WhatsApp notifications | V2 | You ("use recommendation") |
 | D-61 | 2026-09-23 | Automated browser tests | small Playwright smoke suite in Step 23 | You ("use recommendation") |
+
+## Setup decisions
+
+| # | Date | Decision | Why | Decided by |
+|---|---|---|---|---|
+| 5-01 | 2026-09-23 | Next.js **16.3** (latest). In this version the request-filter file is `src/proxy.ts` (not `middleware.ts`) and error pages receive `retry()`. | Latest stable; follows the installed version's own docs in `node_modules/next/dist/docs`. | Claude |
+| 5-02 | 2026-09-23 | shadcn/ui with **Radix** base and **Nova** preset (Lucide icons, Geist font), neutral colours with **blue** as primary until D-52. | Matches PRP 14 (Radix accessibility, Geist, neutral blue). | Claude |
+| 5-03 | 2026-09-23 | Working product name **"Business Manager"**, read from `NEXT_PUBLIC_APP_NAME` (falls back to the working name). | D-52 still open; changing the name later is one setting. | Claude |
+| 5-04 | 2026-09-23 | Kept `AGENTS.md` created by Next.js (notes for AI assistants about Next.js 16). With `AGENTS.md` present, `next dev` only updates that file and never touches `CLAUDE.md`. | Keeps `CLAUDE.md` exactly as written. | Claude |
+| 5-05 | 2026-09-23 | App created in a temporary folder and copied in, because `create-next-app` refuses a folder that already has files. Removed the template's sample images. | Required by Step 5 ("in this folder, without deleting CLAUDE.md or docs/"). | Claude |
