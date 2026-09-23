@@ -1,9 +1,5 @@
 # MASTER PROMPT — Multi-Tenant SaaS Business Management Software
 
-> Where this file lives: save it in your project as `docs/MASTER_PROMPT.md`.
-> Claude Code reads it whenever a prompt in BUILD_GUIDE.md tells it to.
-> The working rules for Claude Code live in `CLAUDE.md` (project root). Claude Code reads that file automatically every session.
-
 ---
 
 ## 0. WHO I AM
