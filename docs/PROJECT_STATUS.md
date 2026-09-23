@@ -18,7 +18,7 @@ STAGE 2 — SETUP. The Next.js app exists (Step 5 done).
 - [x] STEP 5 — Next.js 16 app created in this folder (TypeScript, App Router, Tailwind 4, ESLint, `src/`), shadcn/ui (Radix, Nova preset), home page, 404 page, error page, `.gitignore` (blocks `.env*` except `.env.example`), `.env.example`, `README.md`. `npm run lint` and `npm run build` pass.
 
 ## Next step
-Finish Step 5 on GitHub (create the `main` branch — see ACTION REQUIRED in the chat), then STEP 6 — first Vercel deployment. Waiting for you.
+STEP 6 — first Vercel deployment. Instructions given in the chat (create `main` on GitHub → import the repository in Vercel → Deploy → open the `.vercel.app` link). Waiting for you to report the link or any error.
 
 ## Open decisions so far
 59 of 61 answered. Still open: **D-47** (plans, prices, limits — needed by Step 22) and **D-52** (product name, domain, brand colour — needed by Step 24).
