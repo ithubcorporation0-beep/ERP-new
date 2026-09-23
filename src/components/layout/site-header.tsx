@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import { isClerkConfigured } from "@/lib/env";
 import { APP_NAME } from "@/lib/site";
 
 // Header for public pages: "Log in" / "Sign up" when logged out,
@@ -12,19 +13,23 @@ export function SiteHeader() {
         <Link href="/" className="text-lg font-semibold">
           {APP_NAME}
         </Link>
-        <div className="flex items-center gap-2">
-          <Show when="signed-out">
-            <SignInButton>
-              <Button variant="ghost">Log in</Button>
-            </SignInButton>
-            <SignUpButton>
-              <Button>Sign up</Button>
-            </SignUpButton>
-          </Show>
-          <Show when="signed-in">
-            <UserButton />
-          </Show>
-        </div>
+        {isClerkConfigured() ? (
+          <div className="flex items-center gap-2">
+            <Show when="signed-out">
+              <SignInButton>
+                <Button variant="ghost">Log in</Button>
+              </SignInButton>
+              <SignUpButton>
+                <Button>Sign up</Button>
+              </SignUpButton>
+            </Show>
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
+          </div>
+        ) : (
+          <span className="text-sm text-muted-foreground">Login is being set up</span>
+        )}
       </div>
     </header>
   );

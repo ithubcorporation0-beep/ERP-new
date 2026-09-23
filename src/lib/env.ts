@@ -37,3 +37,12 @@ export function getSiteUrl(): string {
   if (vercelUrl) return `https://${vercelUrl}`;
   return "http://localhost:3000";
 }
+
+// Clerk (login, D-62) is ready only when both keys are set. Until then the site still
+// opens: login pages show "not set up yet" instead of crashing.
+export function isClerkConfigured(): boolean {
+  return (
+    Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.trim()) &&
+    Boolean(process.env.CLERK_SECRET_KEY?.trim())
+  );
+}

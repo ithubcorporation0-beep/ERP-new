@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { shadcn } from "@clerk/ui/themes";
 import { Geist, Geist_Mono } from "next/font/google";
+import { isClerkConfigured } from "@/lib/env";
 import { APP_DESCRIPTION, APP_NAME } from "@/lib/site";
 import "./globals.css";
 
@@ -31,15 +32,20 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        {/* Clerk handles login; it must sit inside <body>. The shadcn theme makes its forms match our design. */}
-        <ClerkProvider
-          appearance={{ theme: shadcn }}
-          signInUrl="/login"
-          signUpUrl="/signup"
-          afterSignOutUrl="/"
-        >
-          {children}
-        </ClerkProvider>
+        {/* Clerk handles login; it must sit inside <body>. The shadcn theme makes its forms match our design.
+            Without Clerk keys (not set up yet) the site still opens, without login. */}
+        {isClerkConfigured() ? (
+          <ClerkProvider
+            appearance={{ theme: shadcn }}
+            signInUrl="/login"
+            signUpUrl="/signup"
+            afterSignOutUrl="/"
+          >
+            {children}
+          </ClerkProvider>
+        ) : (
+          children
+        )}
       </body>
     </html>
   );

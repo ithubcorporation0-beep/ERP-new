@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SignOutButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import { isClerkConfigured } from "@/lib/env";
 
 export const metadata: Metadata = { title: "Account disabled" };
 
@@ -12,9 +13,11 @@ export default function AccountDisabledPage() {
         You cannot use this account at the moment. If you think this is a mistake, please
         contact support.
       </p>
-      <SignOutButton redirectUrl="/">
-        <Button variant="outline">Log out</Button>
-      </SignOutButton>
+      {isClerkConfigured() ? (
+        <SignOutButton redirectUrl="/">
+          <Button variant="outline">Log out</Button>
+        </SignOutButton>
+      ) : null}
     </main>
   );
 }
