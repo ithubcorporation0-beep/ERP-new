@@ -26,7 +26,7 @@ You: the setup jobs below (Clerk + Supabase), then type "continue" for STEP 10 (
 
 ## Pending actions for you (collected — do them when you are ready)
 1. **Security:** delete the Supabase secret keys you pasted in chat and create a new one; reset the database password (Supabase → Project Settings).
-2. **GitHub:** create the `main` branch from `claude/vibrant-galileo-mijszo` and make it the default (Vercel shows 404 until then).
+2. **GitHub:** ✅ `main` created by Claude (2026-09-23). Still to do by you: make `main` the **default branch** (Settings → General) and in Vercel set Production Branch = `main`, then Redeploy.
 3. **Clerk:** create an account + application (clerk.com) → Integrations → **Supabase → Activate** → copy the Clerk domain.
 4. **Supabase:** Authentication → Sign In / Providers → **Third-party auth → Clerk** → paste the Clerk domain.
 5. **Keys** (never in chat): put `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` + `CLERK_SECRET_KEY` + the Supabase values in `.env.local` and in Vercel → Redeploy.
