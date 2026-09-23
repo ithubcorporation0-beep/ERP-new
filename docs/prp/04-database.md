@@ -287,7 +287,7 @@ One row per user account; created automatically by a trigger when someone signs 
 | email | text | ✅ | Copied from Auth by trigger; users cannot edit it here |
 | full_name | text | ✅ | 1–100 chars |
 | phone | text | | |
-| avatar_path | text | | Profile photo in storage |
+| avatar_path | text | | Profile photo in storage — not used in V1 (D-45), kept for later |
 | status | text | ✅ | `active` (default) · `disabled` (only PLATFORM_ADMIN can change) |
 | disabled_reason | text | | |
 | last_organization_id | uuid | | → organizations, on delete set null. Remembers the last organization opened (convenience only, never used for security) |
@@ -489,7 +489,7 @@ Choosing an item on an invoice **copies** name, unit, price and tax into the inv
 Checks: all money ≥ 0; `amount_paid <= total` (D-14); `invoice_number is not null` when status ≠ `draft`.
 **"Overdue" is not stored.** It is calculated when shown: status is `sent` or `partially_paid` **and** `due_date` is before today. A stored "overdue" status would need a daily job and could be wrong if the job fails.
 Status changes are automatic where possible: `sent` → `partially_paid` → `paid` by the payment trigger; back to `partially_paid`/`sent` if a payment is reversed.
-Edit rule: only `draft` invoices can be edited (D-31). Deleting: only drafts.
+Edit rule: only `draft` invoices can be edited (D-31). Deleting: only drafts. Voiding: only when the invoice has no `completed` payments (reverse them first — `09-finance.md`).
 Indexes: `(organization_id, status)`, `(organization_id, customer_id)`, `(organization_id, issue_date)`, `(organization_id, due_date) where status in ('sent','partially_paid')`, `(organization_id, project_id)`.
 
 #### `invoice_items`
@@ -591,7 +591,7 @@ Information about uploaded files (the files themselves live in Supabase Storage)
 | visible_to_client | boolean | ✅ | Default **false** |
 | uploaded_by | uuid | ✅ | forced |
 
-Check: **exactly one** of the five link columns is filled (`num_nonnulls(customer_id, project_id, task_id, invoice_id, expense_id) = 1`). Using real columns instead of a generic "entity_type + entity_id" pair lets the database enforce the link and the same-organization rule.
+Check: **exactly one** of the five link columns is filled (`num_nonnulls(customer_id, project_id, task_id, invoice_id, expense_id) = 1`). Check: expense documents can never be visible to clients (`not (expense_id is not null and visible_to_client)`). Using real columns instead of a generic "entity_type + entity_id" pair lets the database enforce the link and the same-organization rule.
 Indexes: `(organization_id, customer_id)`, `(organization_id, project_id)`, `(organization_id, task_id)`, `(organization_id, invoice_id)`, `(organization_id, expense_id)` (each only where not empty).
 Delete: real delete of row **and** file (storage counts toward plan limits), logged.
 

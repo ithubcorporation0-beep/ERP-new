@@ -2,7 +2,7 @@
 
 ## Stage 1 — The plan
 - [x] STEP 1 — PRP batch A (01–04)
-- [ ] STEP 2 — PRP batch B (05–10)
+- [x] STEP 2 — PRP batch B (05–10)
 - [ ] STEP 3 — PRP batch C (11–17)
 - [ ] STEP 4 — Phases + decisions (18–19), then you answer decisions
 
