@@ -73,7 +73,7 @@ Legend for "Data": **V** = view, **C** = create, **U** = update, **D** = delete/
 | User management | Invite any role except OWNER; change role / disable any member except the OWNER and except themselves. |
 | Reporting | All reports. |
 | Settings | All organization settings except billing. |
-| Billing | No (can see the current plan name only, so they know limits). |
+| Billing | No (can see the plan name, limits and usage on Settings — needed when inviting people — but not payments). |
 
 ### 2.4 MANAGER
 
@@ -166,7 +166,7 @@ Platform Admin column: the platform admin has **no rights inside an organization
 | Edit invoice & tax settings | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
 | Change organization currency (only before first invoice) | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Change "clients can see tasks" setting (D-06) | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| View plan & usage | ✅ | ✅ | 👁 plan name | ❌ | ❌ | ❌ | ❌ |
+| View plan, limits & usage | ✅ | ✅ | 👁 | ❌ | ❌ | ❌ | ❌ |
 | Request plan change / see subscription history | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Transfer ownership | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Delete organization (D-24) | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -293,6 +293,6 @@ A person can see a document only if they can see the record it is attached to (c
 | D-21 | Can CLIENT upload files? | **No in V1.** | Avoids storage abuse and unscanned files from outside; clients can send files by WhatsApp/email and staff upload them. |
 | D-22 | Can EMPLOYEE upload documents? | **Yes**, to tasks assigned to them and projects they are a member of. | Field workers need to upload photos of finished work. |
 | D-24 | How is an organization deleted? | OWNER requests deletion → organization is hidden (`pending_deletion`) → PLATFORM_ADMIN permanently deletes data and files after 30 days. | Protects against accidental or malicious deletion; gives time to undo. |
-| D-25 | What happens when a subscription expires? | **Read-only** (can view and download, cannot create/edit) until renewed; suspended if unpaid for a longer period (numbers in batch C). | Businesses keep access to their records (fair and legally safer) but have a reason to pay. |
+| D-25 | What happens when a subscription expires? | **Read-only** (can view and download, cannot create/edit) until renewed; PLATFORM_ADMIN may suspend after 30 days unpaid (D-49). | Businesses keep access to their records (fair and legally safer) but have a reason to pay. |
 | D-29 | Can one CLIENT login be linked to several customers of the same organization? | **No in V1** — one customer per client membership. | Keeps client security rules simple; rare case. |
 | D-30 | Do CLIENTs see platform announcements? | **No** — announcements are for business users only. | Announcements are about the software (maintenance, new features), not relevant to the business's own customers. |

@@ -105,7 +105,7 @@ The admin client ignores all security rules, so it is used only where there is n
 (a) lives in one server-only file, (b) runs **after** an explicit permission check in code, (c) writes an activity log entry, (d) never returns secret data to the browser.
 
 1. **Disabling / re-enabling a user account in Supabase Auth** — by PLATFORM_ADMIN only (so a disabled person cannot even log in). Needs the Auth admin API.
-2. **Sending an invitation email through Supabase Auth** to a person who has no account yet — only if we choose this email method in batch B (`05-auth-onboarding.md`). If invitations are sent through our own SMTP email instead, this item is removed.
+2. **Sending an invitation email through Supabase Auth** to a person who has no account yet — only if D-34 chooses this method. The recommendation in `05-auth-onboarding.md` §13 (copy-link + our own email provider) removes this item.
 3. **Permanently deleting an organization's data and files** after the 30-day waiting period (D-24) — by PLATFORM_ADMIN only.
 
 Everything else — including accepting invitations, creating an organization, issuing invoice numbers, recording payments — is done with the user's own session plus carefully written `security definer` database functions (functions that run with extra rights but check permissions themselves). Explained in `06-authorization-rls.md`.
@@ -150,4 +150,4 @@ Browser form → Server Action recordPayment({ invoiceId, amount, date, method, 
 
 ## 7. Decisions raised in this file
 
-None new. This file depends on: D-01 (platform admin tenant access), D-14 (overpayment rule), D-24 (organization deletion), and the invitation email method (decided in batch B).
+None new. This file depends on: D-01 (platform admin tenant access), D-14 (overpayment rule), D-24 (organization deletion), and D-34 (invitation delivery).

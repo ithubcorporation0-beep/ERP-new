@@ -8,7 +8,7 @@ Common to every workflow below:
 - Every change writes `activity_logs` (by trigger or database function).
 - Success → a green toast (small pop-up) and the page refreshes. Failure → a red toast with a plain-English message; never a technical error or stack trace.
 - If the organization is read-only (expired subscription, D-25) every write shows: "Your subscription has expired. You can view data but not change it. Ask the owner to renew."
-- Notifications are **in-app only** in V1 (`11-notifications-audit.md`, batch C).
+- Notifications are **in-app only** in V1 (`11-notifications-audit.md`).
 
 ---
 
@@ -125,18 +125,18 @@ Common to every workflow below:
 | Steps | Event happens → notification row created for each recipient (never for the person who did the action) → bell count updates on next page load / refresh → user opens the bell → clicks → linked page opens and the notification is marked read → "Mark all as read" |
 | Database | `notifications` |
 | Errors | Linked record no longer visible (e.g. user removed from project) → page shows "Not found"; notification still marked read |
-| Details | Events list and table in `11-notifications-audit.md` (batch C) |
+| Details | Events list and table in `11-notifications-audit.md` |
 
 ## 12. Subscription (plan change / expiry / suspension)
 
 | | |
 |---|---|
 | Started by | System (trial start at onboarding), OWNER (asks for a plan change or pays), PLATFORM_ADMIN (activates, extends, suspends) |
-| Steps | **Trial**: created at onboarding (length D-25) → banner "Trial ends in N days" for OWNER. **Pay**: OWNER sees payment instructions on `/billing` → pays by bank transfer / JazzCash / Easypaisa → sends proof (outside the app, V1) → PLATFORM_ADMIN records the payment and sets the new period → status `active`. **Plan change**: OWNER requests → PLATFORM_ADMIN changes plan (checks the organization is within the new plan's limits). **Expiry**: when the period end passes, the organization becomes **read-only** (D-25) — checked live from the dates, no background job needed. **Suspension**: PLATFORM_ADMIN suspends (unpaid for long, abuse) → nobody can open the organization → activate again when resolved |
+| Steps | **Trial**: created at onboarding (length D-48) → banner "Trial ends in N days" for OWNER. **Pay**: OWNER sees payment instructions on `/billing` → pays by bank transfer / JazzCash / Easypaisa → sends proof (outside the app, V1) → PLATFORM_ADMIN records the payment and sets the new period → status `active`. **Plan change**: OWNER requests → PLATFORM_ADMIN changes plan (checks the organization is within the new plan's limits). **Expiry**: when the period end passes, the organization becomes **read-only** (D-25) — checked live from the dates, no background job needed. **Suspension**: PLATFORM_ADMIN suspends (unpaid for long, abuse) → nobody can open the organization → activate again when resolved |
 | Database | `subscriptions`, `subscription_payments`, `organizations.status`, `activity_logs` |
 | Notified | OWNER: trial/period ending (banner on every visit in the last 7 days + notification when first seen), plan activated/extended, suspended |
 | Errors | Downgrade over limits ("This organization has 12 users; Basic allows 5"); writes while read-only (message above) |
-| Details | `12-billing-subscriptions.md` (batch C) |
+| Details | `12-billing-subscriptions.md` |
 
 ## 13. Full business flow
 
@@ -159,4 +159,4 @@ At every stage the CLIENT (if invited) sees their project status, invoices and p
 
 ## 14. Decisions raised in this file
 
-None new. Depends on: D-08, D-14, D-17, D-25, D-31, D-34, D-36, D-37, D-40, D-43, D-46.
+None new. Depends on: D-08, D-14, D-17, D-25, D-31, D-48, D-34, D-36, D-37, D-40, D-43, D-46.

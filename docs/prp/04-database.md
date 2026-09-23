@@ -148,7 +148,7 @@ On top of that, RLS insert/update policies check that the user is a member of th
 | | `notifications` | ✅ | |
 | | `activity_logs` | ✅ | |
 
-Total: **25 tables** in V1.
+Total: **25 tables** in V1, plus one small internal table `private.rate_limits` (attempt counters for rate limiting — D-53; lives in the unexposed `private` schema, no user access, created in Step 23).
 
 ---
 
@@ -171,7 +171,7 @@ One business (tenant).
 | suspended_reason | text | | Shown on the suspended page (set by PLATFORM_ADMIN) |
 | currency | char(3) | ✅ | ISO code, default `PKR`. Locked after the first invoice is issued (D-12). |
 | timezone | text | ✅ | Default `Asia/Karachi` |
-| logo_path | text | | Path of logo file in storage (batch B, `10-documents.md`) |
+| logo_path | text | | Path of logo file in storage (`10-documents.md` §9) |
 | deletion_requested_at | timestamptz | | Set when OWNER requests deletion (D-24) |
 | created_by | uuid | ✅ | → `profiles.id`, forced |
 
@@ -191,7 +191,7 @@ Subscription plans. Platform-wide, **no `organization_id`** (not a business tabl
 | price_monthly | numeric(12,2) | ✅ | ≥ 0 |
 | price_yearly | numeric(12,2) | | Optional yearly price |
 | currency | char(3) | ✅ | Default `PKR` |
-| max_users | integer | | Empty = unlimited. Counts active non-client memberships. Numbers: D-25 |
+| max_users | integer | | Empty = unlimited. Counts active non-client memberships. Numbers: D-47 |
 | max_clients | integer | | Empty = unlimited. Counts active client memberships |
 | max_customers | integer | | Empty = unlimited |
 | max_storage_mb | integer | | Empty = unlimited |
@@ -210,7 +210,7 @@ The **current** plan state of each organization (exactly one row per organizatio
 | organization_id | uuid | ✅ | → organizations. **Unique** (one row per org) |
 | plan_id | uuid | ✅ | → plans |
 | status | text | ✅ | `trialing` · `active` · `expired` · `cancelled` |
-| trial_ends_at | timestamptz | | Set when the trial starts (trial length D-25) |
+| trial_ends_at | timestamptz | | Set when the trial starts (trial length D-48) |
 | current_period_start | date | | Set when PLATFORM_ADMIN activates/extends |
 | current_period_end | date | | Access paid until this date |
 | notes | text | | PLATFORM_ADMIN's internal note (not visible to the organization) |
@@ -638,7 +638,7 @@ In-app messages for one person.
 | id | uuid | ✅ | PK |
 | organization_id | uuid | ✅ | → organizations |
 | recipient_user_id | uuid | ✅ | → profiles |
-| type | text | ✅ | e.g. `task_assigned`, `project_member_added`, `invoice_issued`, `payment_recorded`, `document_uploaded`, `subscription_expiring` (full list in batch C) |
+| type | text | ✅ | e.g. `task_assigned`, `project_member_added`, `invoice_issued`, `payment_recorded`, `document_uploaded`, `subscription_expiring` (full list in `11-notifications-audit.md`) |
 | title | text | ✅ | |
 | body | text | | |
 | link_path | text | | Page to open, must start with `/app/` (checked) |

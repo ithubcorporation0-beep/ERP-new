@@ -232,7 +232,7 @@ Bell icon with unread count in the header; dropdown with the latest 10; `/notifi
 | Tables | activity_logs, profiles |
 
 ### 5.15 Settings
-- **Organization** (`/settings`): name, logo, legal name, address, phone, email, website, tax registration number, timezone, currency (OWNER, only before first issued invoice), "Clients can see tasks" (D-06), current plan name (ADMIN).
+- **Organization** (`/settings`): name, logo, legal name, address, phone, email, website, tax registration number, timezone, currency (OWNER, only before first issued invoice), "Clients can see tasks" (D-06), current plan, limits and usage (ADMIN, read-only).
 - **Invoices** (`/settings/invoices`): prefix, default due days, default notes/terms, tax label, default tax rate (D-10).
 - **Danger zone** (OWNER): transfer ownership, request organization deletion (D-24).
 

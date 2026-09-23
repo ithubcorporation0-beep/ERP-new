@@ -59,7 +59,7 @@ The software puts all of this in one place, with the right access for each perso
 - **Organization** (also called **tenant**): one business that signed up. Everything a business creates (customers, invoices, files…) belongs to exactly one organization.
 - **Multi-tenant**: many organizations share the same website and the same database, but each one only ever sees its own data. This separation is called **tenant isolation** and is the most important security rule of the project.
 - **Membership**: the link between a person (user account) and an organization, with a role. One person can be a member of several organizations with a different role in each (example: an accountant working for two businesses).
-- **Plan / subscription**: each organization is on a plan (trial, basic, pro…). In V1 payment for the plan is collected **manually** (bank transfer / JazzCash / Easypaisa) and the platform admin activates it. Details: `12-billing-subscriptions.md` (batch C).
+- **Plan / subscription**: each organization is on a plan (trial, basic, pro…). In V1 payment for the plan is collected **manually** (bank transfer / JazzCash / Easypaisa) and the platform admin activates it. Details: `12-billing-subscriptions.md`.
 
 ## 5. Main objectives
 
@@ -111,14 +111,14 @@ The software puts all of this in one place, with the right access for each perso
 | One currency per organization | ✅ | Multi-currency invoices (D-12) |
 | Manual subscription billing | ✅ | Automatic payment gateway |
 | In-app notifications | ✅ | Email / WhatsApp / SMS notifications |
-| Built-in Supabase email (testing only) | ✅ dev | Custom SMTP (required before real customers — provider decided in batch B) |
+| Built-in Supabase email (testing only) | ✅ dev | Custom SMTP (required before real customers — provider D-33) |
 | Tasks with one assignee | ✅ | Several assignees, sub-tasks, time tracking |
 | Customer primary contact on the customer record | ✅ | Several contacts per customer (D-16) |
 | Payment linked to one invoice | ✅ | Advance payments, one payment split over many invoices, credit notes (D-14) |
 | Expense recording by Owner/Admin/Accountant | ✅ | Employee expense claims with approval (D-20) |
 | Project budget | ❌ | Budget and profitability per project (D-18) |
 | English interface | ✅ | Urdu / other languages (D-26) |
-| Reports on screen | ✅ | CSV export (decided in batch C) |
+| Reports on screen + CSV export (D-55) | ✅ | Scheduled/emailed reports |
 | — | — | Recurring invoices, quotes/estimates, PDF emailing, client portal chat, stock control, AI assistant |
 
 ## 9. Decisions raised in this file

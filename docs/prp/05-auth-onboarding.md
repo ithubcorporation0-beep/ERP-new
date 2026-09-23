@@ -49,7 +49,7 @@ Errors shown: "Please enter a valid email", "Password must be at least 8 charact
 
 - Supabase sends an email with a link to `/auth/confirm?token_hash=…&type=email&next=/onboarding`. (In Step 9 you will edit the email templates in the Supabase dashboard so the links point to this route — exact clicks given then.)
 - `/auth/confirm` calls Supabase `verifyOtp()`; on success the session cookie is set and the user is sent to `next` (only if `next` is a **relative path inside our site** — this stops "open redirect" tricks that send users to fake sites).
-- A user who logs in without verifying sees `/verify-email` with a "resend email" button (limited, see batch C rate limits).
+- A user who logs in without verifying sees `/verify-email` with a "resend email" button (limited — `16-security-performance-testing.md` S-15).
 - Unverified users cannot create organizations or accept invitations.
 
 ## 4. Login
@@ -170,7 +170,7 @@ Errors: "This web name is already taken", "You can own at most N organizations �
 
 ### 13.2 Resend / cancel
 
-- **Resend**: creates a **new** token (the old link stops working), new 7-day expiry, `send_count + 1`, limited (batch C rate limits).
+- **Resend**: creates a **new** token (the old link stops working), new 7-day expiry, `send_count + 1`, limited (`16-security-performance-testing.md` S-15).
 - **Cancel**: status `cancelled`; the link stops working.
 
 ### 13.3 Accepting

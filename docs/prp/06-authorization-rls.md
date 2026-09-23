@@ -276,7 +276,7 @@ Storage policies are tied to this table: a file can be downloaded only if the us
 |---|---|---|
 | `platform_admins` | own row, or `PA` | none (SQL in dashboard only) |
 | `plans` | any logged-in user: `is_active` plans; `PA`: all | `PA` |
-| `subscriptions` | `PA`. Organizations read their plan through `get_my_subscription(org)` (OWNER: full info without `notes`; ADMIN: plan name) | Fn only (platform functions) |
+| `subscriptions` | `PA`. Organizations read their plan through `get_my_subscription(org)` (OWNER: full info without `notes`; ADMIN: plan, limits and usage) | Fn only (platform functions) |
 | `subscription_payments` | `PA`; OWNER of that org (via function, without internal notes) | Fn only (`PA`) |
 | `platform_settings` | `PA` (public values like `signups_enabled` read by the server via a function) | `PA` |
 | `platform_announcements` | published + current: any user with an active non-client membership, or `PA` | `PA` |
