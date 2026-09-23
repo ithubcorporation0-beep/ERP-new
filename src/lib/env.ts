@@ -26,3 +26,14 @@ export function requireSupabasePublicEnv(): SupabasePublicEnv {
   }
   return env;
 }
+
+// The public address of this website, used in email links (confirm email, reset password).
+// Local: NEXT_PUBLIC_SITE_URL=http://localhost:3000. Vercel Preview: left empty, so the
+// automatic preview address is used. Production: your real domain.
+export function getSiteUrl(): string {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (configured) return configured.replace(/\/+$/, "");
+  const vercelUrl = process.env.VERCEL_URL?.trim();
+  if (vercelUrl) return `https://${vercelUrl}`;
+  return "http://localhost:3000";
+}
