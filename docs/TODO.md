@@ -15,7 +15,8 @@
 - [x] STEP 5 — Project setup (app created, lint + build pass)
 - [ ] STEP 5 — GitHub: create `main` branch and make it the default (you)
 - [ ] STEP 6 — First Vercel deployment (instructions given; waiting for you: import in Vercel, Deploy, send the .vercel.app link)
-- [ ] STEP 7 — Connect Supabase
+- [x] STEP 7 — Connect Supabase: code done
+- [ ] STEP 7 — You: secret key in .env.local + Vercel variables + Redeploy; `npx supabase login` + `npx supabase link`; /health shows ✅
 
 ## Stage 3 — Foundation
 - [ ] STEP 8 — Database foundation

@@ -29,3 +29,12 @@ npm run build      # builds the production version (same as Vercel does)
 ```
 
 Settings and keys go in `.env.local` (copy `.env.example`). `.env.local` is never committed.
+
+Check the Supabase connection: open http://localhost:3000/health (temporary page).
+
+Supabase command-line tool (database changes, from Step 8):
+
+```bash
+npx supabase login                                  # once, opens the browser
+npx supabase link --project-ref <your-project-ref>  # once, asks for the database password
+```
