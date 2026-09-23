@@ -9,7 +9,7 @@
 
 | # | Area | How we do it | Checked by |
 |---|---|---|---|
-| S-01 | **Authentication** | Supabase Auth, email + password, email confirmation on, password rules (D-35), server verifies the user with Supabase on every request (`getUser`/`getClaims`, never `getSession` alone) | Manual + E2E |
+| S-01 | **Authentication** | Clerk (D-62): email + password, email verification required, password rules (D-35), bot protection, new-device check; server verifies the user with Clerk's `auth()` on every request; Supabase verifies the Clerk token itself (third-party auth) | Manual + E2E |
 | S-02 | **Authorization** | `requireMembership` / `requirePlatformAdmin` in every layout, page and Server Action; roles only from `memberships` / `platform_admins` | Code review + tests |
 | S-03 | **RLS** | Enabled on **every** table in `public`; policies per action, `to authenticated`; no policy for `anon` | SQL query listing tables without RLS = must return 0 rows; pgTAP |
 | S-04 | **Tenant isolation** | Helpers require active membership; composite foreign keys; `organization_id` immutable | pgTAP "org A vs org B" suite |
@@ -23,14 +23,14 @@
 | S-12 | **XSS** (injecting scripts into pages) | React escapes all text; **no** `dangerouslySetInnerHTML` with user content; comments, notes and announcements are plain text; no SVG uploads | Code search |
 | S-13 | **CSRF** (another site submitting forms as the user) | Server Actions only accept POST and Next.js checks the Origin header; logout is POST; cookies `SameSite=Lax` | Next.js built-in; manual check |
 | S-14 | **Open redirects** | `next=` parameters must be relative paths starting with `/` (not `//`) | Unit test |
-| S-15 | **Rate limiting** | Supabase Auth limits for signup/login/reset/OTP; own limits (D-53) for: invitations (e.g. 20/hour per organization), resend (5/day per invite), upload preparation (60/hour per user), slug checks | Manual test: exceed → friendly message |
+| S-15 | **Rate limiting** | Clerk's limits and bot protection for signup/login/reset/codes; own limits (D-53) for: invitations (e.g. 20/hour per organization), resend (5/day per invite), upload preparation (60/hour per user), slug checks | Manual test: exceed → friendly message |
 | S-16 | **Audit logging** | Trigger on every business table; append-only; no secrets | pgTAP: update/delete log → refused |
 | S-17 | **Error handling** | Friendly messages only; database errors mapped by code (`lib/errors.ts`); stack traces only in server logs; `error.tsx` pages | Manual: force an error |
-| S-18 | **Session security** | httpOnly, Secure, SameSite cookies from `@supabase/ssr`; logout clears them; disabled account also banned in Supabase Auth | Manual |
+| S-18 | **Session security** | Clerk's secure session cookies and short-lived tokens; logout via Clerk; disabled account also banned in Clerk | Manual |
 | S-19 | **Security headers** (in `next.config.ts`) | `Content-Security-Policy` (self + Supabase URL; no inline scripts except what Next.js needs), `X-Frame-Options: DENY` / `frame-ancestors 'none'` (no embedding in other sites), `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` (camera only where uploads need it), `Strict-Transport-Security` | Online header checker on the preview URL |
 | S-20 | **Enumeration** | Same message for "email exists / doesn't exist"; 404 (not 403) for other orgs' IDs; UUIDs | Manual |
 | S-21 | **CSV exports** (D-55) | Cells starting with `=`, `+`, `-`, `@` are prefixed with `'` so Excel does not run them as formulas; export limited to roles that can see the data | Unit test |
-| S-22 | **Dependencies** | `npm audit` before launch; only announced packages (rule 11) | Command |
+| S-22 | **Dependencies** | `npm audit` before launch; only announced packages (rule 11). Known: 13 moderate warnings from an old `uuid` copy inside `@clerk/ui` (2026-09-23; the offered fix downgrades Clerk) — re-check in Step 23 | Command |
 | S-23 | **Production settings** | Separate prod Supabase project (D-56), email confirmation on, custom SMTP, redirect URLs only for real domains, `/health` page removed, seed data never applied to prod, Supabase "Security Advisor" (dashboard lint) shows no errors | Step 24 checklist |
 
 ## Part 2 — Performance
@@ -38,7 +38,7 @@
 | Topic | How |
 |---|---|
 | Indexes | Every index in `04-database.md` (all start with `organization_id`); Supabase "Performance Advisor" checked in Step 23 |
-| RLS speed | `(select auth.uid())` wrapped; helper functions `stable`; policies filter on indexed columns |
+| RLS speed | `(select private.current_user_id())` wrapped; helper functions `stable`; policies filter on indexed columns |
 | Pagination | Every list 25 rows (logs 50), done in the database with `range`; total count only where shown |
 | Server-side queries | Data loaded in Server Components; select **only needed columns**, never `select *` on big tables |
 | No whole tables | Dashboards and reports use database `sum`/`count`/`group by` (views or RPC functions); never load all invoices into the app to add them up |

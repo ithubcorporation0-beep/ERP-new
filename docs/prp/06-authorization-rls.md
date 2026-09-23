@@ -34,7 +34,7 @@ Policies call small SQL functions so that the rules are written once and used ev
 - **`security definer`**: the function runs with the rights of the function's owner (not of the user calling it). This lets it read `memberships` even though the user's own RLS would limit that. It must therefore be written very carefully and only return true/false or an ID.
 - **Fixed `search_path`**: `set search_path = ''` — the function does not look up tables by "nearest name"; every table is written with its schema (`public.memberships`). This stops an attacker from creating a fake table with the same name that the function would use by mistake.
 - **`stable`**: tells PostgreSQL the answer does not change within one query, so it can reuse it.
-- **`(select auth.uid())`**: `auth.uid()` returns the logged-in user's ID from their verified token. Wrapping it in `select` makes PostgreSQL compute it once per query instead of once per row (much faster on big tables).
+- **`(select private.current_user_id())`**: returns the logged-in person's Clerk id from the login token that Supabase has already verified (`auth.jwt() ->> 'sub'`, D-62). Supabase's own `auth.uid()` is not used because it expects Supabase-style ids. Wrapping it in `select` makes PostgreSQL compute it once per query instead of once per row (much faster on big tables).
 - **`private` schema**: helper functions live in a schema (a folder inside the database) called `private`, which Supabase's automatic API does **not** expose, so nobody can call them directly from the browser. Only the RPC functions that the app needs live in `public`.
 
 ### 3.2 The functions
@@ -71,7 +71,7 @@ as $$
     join public.organizations o on o.id = m.organization_id
     join public.profiles p      on p.id = m.user_id
     where m.organization_id = org
-      and m.user_id = (select auth.uid())
+      and m.user_id = (select private.current_user_id())
       and m.status = 'active'
       and o.status = 'active'
       and p.status = 'active'
@@ -93,7 +93,7 @@ Solution: the policy calls `private.is_member(org)`, a `security definer` functi
 Every such function in `public`:
 
 1. has `security definer` + `set search_path = ''`,
-2. starts by checking `auth.uid()` is not null,
+2. starts by checking `private.current_user_id()` is not null,
 3. checks permissions itself with the helpers (e.g. `private.can_write(org, array['owner','admin','accountant'])`),
 4. loads every record **by ID together with the organization** and locks it when money is involved (`for update`),
 5. validates every input again (the server already did with Zod — this is the second check),
@@ -123,7 +123,7 @@ Every such function in `public`:
 
 ## 5. RLS strategy per table
 
-Abbreviations: **M(org)** = `is_member(org)`; **R(org, […])** = `has_role(org, [...])`; **W(org, […])** = `can_write(org, [...])`; **PA** = `is_platform_admin()`; **CC** = `client_customer_id(organization_id)`; **ME** = `(select auth.uid())`.
+Abbreviations: **M(org)** = `is_member(org)`; **R(org, […])** = `has_role(org, [...])`; **W(org, […])** = `can_write(org, [...])`; **PA** = `is_platform_admin()`; **CC** = `client_customer_id(organization_id)`; **ME** = `(select private.current_user_id())`.
 "Fn only" = no policy; changes only through the RPC functions in §4.
 
 ### 5.1 `organizations`
@@ -152,8 +152,8 @@ A CLIENT sees only their own membership row.
 | Action | Rule |
 |---|---|
 | select | own row, **or** profiles of people who share an organization with me **and** whom my role may see (same rule as memberships select), **or** `PA` |
-| insert | none (trigger `handle_new_user` on signup) |
-| update | own row only; column grants: `full_name`, `phone`, `last_organization_id` (status only by platform function) |
+| insert | none (created by the server from Clerk after login — admin client use #1) |
+| update | own row only; column grants: `phone`, `last_organization_id` (name/email from Clerk; status only by platform function) |
 | delete | none |
 
 ### 5.4 `invitations`
@@ -298,7 +298,7 @@ Storage policies are tied to this table: a file can be downloaded only if the us
 | **Client A sees Client B** | Client policies compare `customer_id` with `client_customer_id(org)`, taken from **their membership in the database**, not from the URL or the browser. |
 | **Employee uses admin functions** | Buttons hidden; Server Action role check refuses; RLS write policies require `owner/admin/…`; RPC functions check roles themselves. |
 | **Direct API calls with the public (publishable) key** | The key only identifies the project; it gives no rights. Without login → `anon` → no policies → nothing. With login → the same RLS as the website. Helper functions are in the unexposed `private` schema; RPC functions check permissions themselves. |
-| **User changes their own role** | No update policy on `memberships`; role changes only via `change_member_role`, which refuses `membership.user_id = auth.uid()`; a trigger blocks it again; roles are never read from `user_metadata`. |
+| **User changes their own role** | No update policy on `memberships`; role changes only via `change_member_role`, which refuses `membership.user_id = private.current_user_id()`; a trigger blocks it again; roles are never read from `user_metadata`. |
 | **User changes `organization_id`, totals, status, `created_by`** | Column grants do not include them; triggers force/recalculate them. |
 | **Disabled member keeps an open tab** | `is_member` requires `status = 'active'` → next request returns nothing; server shows "No access". |
 | **Suspended organization** | `is_member` requires the organization to be `active` → all business data closed at database level. |

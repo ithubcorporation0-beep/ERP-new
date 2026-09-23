@@ -22,10 +22,12 @@ grant usage on schema private to authenticated, service_role;
 -- 1. Tables
 -- -----------------------------------------------------------------------------
 
--- 1.1 profiles — one row per user account (created by trigger at signup).
+-- 1.1 profiles — one row per user account. Logins are handled by Clerk (D-62), so the
+--     id is the Clerk user id (text like "user_2abc…"). Rows are created/updated by our
+--     server right after sign-in, with details it reads from Clerk (never from the browser).
 --     No role column on purpose: roles live only in memberships / platform_admins.
 create table public.profiles (
-  id                   uuid primary key references auth.users (id) on delete cascade,
+  id                   text primary key check (char_length(id) between 1 and 64),
   email                text not null default '',
   full_name            text not null default '' check (char_length(full_name) <= 100),
   phone                text check (char_length(phone) <= 30),
@@ -57,7 +59,7 @@ create table public.organizations (
   timezone              text not null default 'Asia/Karachi' check (char_length(timezone) between 1 and 64),
   logo_path             text check (char_length(logo_path) <= 500),
   deletion_requested_at timestamptz,
-  created_by            uuid references public.profiles (id) on delete set null,
+  created_by            text references public.profiles (id) on delete set null,
   created_at            timestamptz not null default now(),
   updated_at            timestamptz not null default now()
 );
@@ -96,15 +98,15 @@ create table public.organization_settings (
 create table public.memberships (
   id              uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete cascade,
-  user_id         uuid not null references public.profiles (id) on delete cascade,
+  user_id         text not null references public.profiles (id) on delete cascade,
   role            text not null
                     check (role in ('owner', 'admin', 'manager', 'accountant', 'employee', 'client')),
   status          text not null default 'active' check (status in ('active', 'disabled')),
   customer_id     uuid, -- foreign key to customers is added in Step 12
   job_title       text check (char_length(job_title) <= 100),
-  invited_by      uuid references public.profiles (id) on delete set null,
+  invited_by      text references public.profiles (id) on delete set null,
   disabled_at     timestamptz,
-  disabled_by     uuid references public.profiles (id) on delete set null,
+  disabled_by     text references public.profiles (id) on delete set null,
   created_at      timestamptz not null default now(),
   updated_at      timestamptz not null default now(),
   constraint memberships_org_user_key unique (organization_id, user_id),
@@ -134,11 +136,11 @@ create table public.invitations (
   status          text not null default 'pending'
                     check (status in ('pending', 'accepted', 'cancelled', 'expired')),
   expires_at      timestamptz not null default (now() + interval '7 days'),
-  invited_by      uuid references public.profiles (id) on delete set null,
-  accepted_by     uuid references public.profiles (id) on delete set null,
+  invited_by      text references public.profiles (id) on delete set null,
+  accepted_by     text references public.profiles (id) on delete set null,
   accepted_at     timestamptz,
   cancelled_at    timestamptz,
-  cancelled_by    uuid references public.profiles (id) on delete set null,
+  cancelled_by    text references public.profiles (id) on delete set null,
   last_sent_at    timestamptz not null default now(),
   send_count      integer not null default 1 check (send_count >= 1),
   created_at      timestamptz not null default now(),
@@ -156,7 +158,7 @@ create index invitations_cancelled_by_idx on public.invitations (cancelled_by);
 -- 1.6 platform_admins — who runs the whole SaaS. Rows are added ONLY with SQL
 --     in the Supabase dashboard (no policy lets the website add one).
 create table public.platform_admins (
-  user_id    uuid primary key references public.profiles (id) on delete cascade,
+  user_id    text primary key references public.profiles (id) on delete cascade,
   note       text check (char_length(note) <= 200),
   created_at timestamptz not null default now()
 );
@@ -166,7 +168,7 @@ create table public.platform_admins (
 create table public.activity_logs (
   id              bigint generated always as identity primary key,
   organization_id uuid references public.organizations (id) on delete cascade, -- null = platform-level event
-  actor_user_id   uuid,
+  actor_user_id   text,
   action          text not null check (char_length(action) between 1 and 100),
   table_name      text not null,
   record_id       text,
@@ -182,10 +184,19 @@ create index activity_logs_actor_idx on public.activity_logs (actor_user_id);
 
 -- -----------------------------------------------------------------------------
 -- 2. Helper functions for security rules
+--    Who is logged in: the "sub" (subject) of the Clerk login token that Supabase has
+--    already verified. (Supabase's private.current_user_id() is not used: it expects Supabase-style ids.)
 --    security definer = runs with the owner's rights, so it can read memberships
 --    without triggering RLS again (avoids "infinite recursion").
 --    search_path = '' = every table is written with its schema (no look-alike tricks).
 -- -----------------------------------------------------------------------------
+
+create function private.current_user_id()
+returns text
+language sql stable set search_path = ''
+as $$
+  select nullif((select auth.jwt()) ->> 'sub', '');
+$$;
 
 create function private.is_platform_admin()
 returns boolean
@@ -195,7 +206,7 @@ as $$
     select 1
     from public.platform_admins pa
     join public.profiles p on p.id = pa.user_id
-    where pa.user_id = (select auth.uid())
+    where pa.user_id = (select private.current_user_id())
       and p.status = 'active'
   );
 $$;
@@ -211,7 +222,7 @@ as $$
   join public.organizations o on o.id = m.organization_id
   join public.profiles p      on p.id = m.user_id
   where m.organization_id = org
-    and m.user_id = (select auth.uid())
+    and m.user_id = (select private.current_user_id())
     and m.status = 'active'
     and o.status = 'active'
     and p.status = 'active';
@@ -240,7 +251,7 @@ as $$
   join public.organizations o on o.id = m.organization_id
   join public.profiles p      on p.id = m.user_id
   where m.organization_id = org
-    and m.user_id = (select auth.uid())
+    and m.user_id = (select private.current_user_id())
     and m.status = 'active'
     and o.status = 'active'
     and p.status = 'active';
@@ -256,7 +267,7 @@ as $$
   join public.organizations o on o.id = m.organization_id
   join public.profiles p      on p.id = m.user_id
   where m.organization_id = org
-    and m.user_id = (select auth.uid())
+    and m.user_id = (select private.current_user_id())
     and m.role = 'client'
     and m.status = 'active'
     and o.status = 'active'
@@ -284,7 +295,7 @@ $$;
 -- Yes if the person is a member of an organization where the current user is
 -- OWNER, ADMIN, MANAGER or ACCOUNTANT. (Employees seeing co-members on shared
 -- projects is added in Step 13.)
-create function private.can_see_profile(target uuid)
+create function private.can_see_profile(target text)
 returns boolean
 language sql stable security definer set search_path = ''
 as $$
@@ -297,14 +308,14 @@ as $$
 $$;
 
 revoke all on function
-  private.is_platform_admin(), private.my_role(uuid), private.is_member(uuid),
+  private.current_user_id(), private.is_platform_admin(), private.my_role(uuid), private.is_member(uuid),
   private.has_role(uuid, text[]), private.my_membership_id(uuid), private.client_customer_id(uuid),
-  private.org_writable(uuid), private.can_write(uuid, text[]), private.can_see_profile(uuid)
+  private.org_writable(uuid), private.can_write(uuid, text[]), private.can_see_profile(text)
 from public, anon;
 grant execute on function
-  private.is_platform_admin(), private.my_role(uuid), private.is_member(uuid),
+  private.current_user_id(), private.is_platform_admin(), private.my_role(uuid), private.is_member(uuid),
   private.has_role(uuid, text[]), private.my_membership_id(uuid), private.client_customer_id(uuid),
-  private.org_writable(uuid), private.can_write(uuid, text[]), private.can_see_profile(uuid)
+  private.org_writable(uuid), private.can_write(uuid, text[]), private.can_see_profile(text)
 to authenticated, service_role;
 
 
@@ -330,8 +341,8 @@ returns trigger
 language plpgsql set search_path = ''
 as $$
 begin
-  if auth.uid() is not null then
-    new := jsonb_populate_record(new, jsonb_build_object(tg_argv[0], auth.uid()));
+  if private.current_user_id() is not null then
+    new := jsonb_populate_record(new, jsonb_build_object(tg_argv[0], private.current_user_id()));
   end if;
   return new;
 end;
@@ -381,7 +392,7 @@ begin
 
   if tg_op = 'UPDATE' then
     -- Nobody changes their own role or status.
-    if auth.uid() is not null and old.user_id = auth.uid()
+    if private.current_user_id() is not null and old.user_id = private.current_user_id()
        and (new.role is distinct from old.role or new.status is distinct from old.status) then
       raise exception 'CANNOT_CHANGE_OWN_MEMBERSHIP' using errcode = 'insufficient_privilege';
     end if;
@@ -436,7 +447,7 @@ begin
   end if;
 
   -- UPDATE
-  if v_allowed or auth.uid() is null then
+  if v_allowed or private.current_user_id() is null then
     return new;
   end if;
 
@@ -449,7 +460,7 @@ begin
 
   if new.status = 'cancelled' then
     new.cancelled_at := now();
-    new.cancelled_by := auth.uid();
+    new.cancelled_by := private.current_user_id();
   elsif new.token_hash is distinct from old.token_hash then
     -- Resend: new link, new 7-day expiry.
     new.expires_at   := now() + interval '7 days';
@@ -460,36 +471,7 @@ begin
 end;
 $$;
 
--- 3.7 New signup → profile row. Keeps profiles.email in sync with Auth.
-create function private.handle_new_user()
-returns trigger
-language plpgsql security definer set search_path = ''
-as $$
-begin
-  insert into public.profiles (id, email, full_name)
-  values (
-    new.id,
-    coalesce(lower(new.email), ''),
-    left(btrim(coalesce(new.raw_user_meta_data ->> 'full_name', '')), 100)
-  )
-  on conflict (id) do nothing;
-  return new;
-end;
-$$;
-
-create function private.handle_user_email_change()
-returns trigger
-language plpgsql security definer set search_path = ''
-as $$
-begin
-  update public.profiles
-     set email = coalesce(lower(new.email), '')
-   where id = new.id;
-  return new;
-end;
-$$;
-
--- 3.8 Audit log: records every insert/update/delete. Only changed fields are
+-- 3.7 Audit log: records every insert/update/delete. Only changed fields are
 --     stored for updates. Column names passed as trigger arguments are never
 --     logged (e.g. token_hash). IP / browser come from headers our server sends.
 create function private.audit_row_change()
@@ -566,7 +548,7 @@ begin
     (organization_id, actor_user_id, action, table_name, record_id, changes, ip_address, user_agent)
   values (
     v_org,
-    auth.uid(),
+    private.current_user_id(),
     lower(tg_op),
     tg_table_name,
     coalesce(v_row ->> 'id', v_row ->> 'user_id', v_row ->> 'organization_id'),
@@ -581,8 +563,7 @@ $$;
 revoke all on function
   private.set_updated_at(), private.force_actor_column(), private.prevent_org_change(),
   private.validate_organization(), private.guard_membership_changes(),
-  private.guard_invitation_changes(), private.handle_new_user(),
-  private.handle_user_email_change(), private.audit_row_change()
+  private.guard_invitation_changes(), private.audit_row_change()
 from public, anon, authenticated;
 
 
@@ -624,13 +605,6 @@ create trigger guard_membership_changes before update or delete on public.member
 create trigger guard_invitation_changes before insert or update on public.invitations
   for each row execute function private.guard_invitation_changes();
 
--- signup → profile, email changes → profile
-create trigger on_auth_user_created after insert on auth.users
-  for each row execute function private.handle_new_user();
-create trigger on_auth_user_email_changed after update of email on auth.users
-  for each row when (new.email is distinct from old.email)
-  execute function private.handle_user_email_change();
-
 -- audit log (after the change, one entry per row)
 create trigger audit_row_change after insert or update or delete on public.organizations
   for each row execute function private.audit_row_change();
@@ -667,20 +641,21 @@ from anon, authenticated;
 
 -- 5.1 profiles
 grant select on public.profiles to authenticated;
-grant update (full_name, phone, last_organization_id) on public.profiles to authenticated;
+-- Name and email are managed in Clerk and copied here by the server; users may edit only these:
+grant update (phone, last_organization_id) on public.profiles to authenticated;
 
 create policy "profiles: read own, visible team members, or as platform admin"
   on public.profiles for select to authenticated
   using (
-    id = (select auth.uid())
+    id = (select private.current_user_id())
     or private.can_see_profile(id)
     or private.is_platform_admin()
   );
 
 create policy "profiles: update own"
   on public.profiles for update to authenticated
-  using (id = (select auth.uid()))
-  with check (id = (select auth.uid()));
+  using (id = (select private.current_user_id()))
+  with check (id = (select private.current_user_id()));
 
 -- 5.2 organizations (created only by a database function in Step 10)
 grant select on public.organizations to authenticated;
@@ -717,7 +692,7 @@ grant select on public.memberships to authenticated;
 create policy "memberships: read own, team list, platform admin"
   on public.memberships for select to authenticated
   using (
-    user_id = (select auth.uid())
+    user_id = (select private.current_user_id())
     or private.has_role(organization_id, array['owner', 'admin', 'manager', 'accountant'])
     or private.is_platform_admin()
   );
@@ -748,7 +723,7 @@ grant select on public.platform_admins to authenticated;
 
 create policy "platform_admins: read own row or as platform admin"
   on public.platform_admins for select to authenticated
-  using (user_id = (select auth.uid()) or private.is_platform_admin());
+  using (user_id = (select private.current_user_id()) or private.is_platform_admin());
 
 -- 5.7 activity_logs (read-only; written only by the audit trigger)
 grant select on public.activity_logs to authenticated;
@@ -759,14 +734,3 @@ create policy "activity_logs: read by owner/admin or platform admin"
     (organization_id is not null and private.has_role(organization_id, array['owner', 'admin']))
     or (organization_id is null and private.is_platform_admin())
   );
-
-
--- -----------------------------------------------------------------------------
--- 6. Accounts that already exist get a profile row
--- -----------------------------------------------------------------------------
-insert into public.profiles (id, email, full_name)
-select u.id,
-       coalesce(lower(u.email), ''),
-       left(btrim(coalesce(u.raw_user_meta_data ->> 'full_name', '')), 100)
-from auth.users u
-on conflict (id) do nothing;

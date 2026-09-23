@@ -1,7 +1,7 @@
 # 19 — Decisions Required
 
-> Every question raised in the PRP, numbered D-01 … D-61, with the options and the chosen answer.
-> **Status (2026-09-23):** you answered "yes" = **use the recommendation for all**. 59 decisions are answered; **2 are still open: D-47 (plans & prices, needed by Step 22) and D-52 (product name/domain/colour, needed by Step 24)**.
+> Every question raised in the PRP, numbered D-01 … D-62, with the options and the chosen answer.
+> **Status (2026-09-23):** you answered "yes" = **use the recommendation for all**. 60 decisions are answered (D-62 added later: Clerk); **2 are still open: D-47 (plans & prices, needed by Step 22) and D-52 (product name/domain/colour, needed by Step 24)**.
 > All PRP files were updated to match, and every answer is recorded in `docs/DECISIONS.md`. To change an answer later, say so — Claude will first list which files, tables and pages it affects.
 
 Groups:
@@ -33,6 +33,7 @@ Groups:
 | D-29 | One client login linked to several customers? | a) one customer per client login · b) several | **a) One** | Step 12 | 02 |
 | D-31 | Can an issued invoice be edited? | a) no — void + duplicate · b) yes while unpaid, with log · c) yes, always | **a) No** | Step 15 | 04, 09 |
 | D-32 | Can a payment be deleted? | a) no — reverse only · b) OWNER may delete | **a) Reverse only** | Step 16 | 04, 09 |
+| D-62 | Login provider (added 2026-09-23) | a) Supabase Auth · b) Clerk login + Supabase data · c) both side by side | **b) Clerk login + Supabase data** (chosen by you) | Step 8 (user id type), 9 | 03, 04, 05, 06, 13 |
 
 ## B. Blocks a later phase
 
@@ -93,7 +94,7 @@ Groups:
 
 ## Count
 
-- A. Blocks the database: **16**
+- A. Blocks the database: **17** (incl. D-62)
 - B. Blocks a later phase: **31** (29 answered; **D-47 and D-52 still open**)
 - C. Can wait: **14**
-- Total: **61** (59 answered, 2 open)
+- Total: **62** (60 answered, 2 open)

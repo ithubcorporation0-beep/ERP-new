@@ -122,7 +122,7 @@ returning last_value into v_next;
 -- 3. build the number and issue
 update public.invoices
    set invoice_number = v_prefix || '-' || v_year || '-' || lpad(v_next::text, 4, '0'),
-       status = 'sent', sent_at = now(), sent_by = auth.uid(), bill_to = <customer snapshot>
+       status = 'sent', sent_at = now(), sent_by = private.current_user_id(), bill_to = <customer snapshot>
  where id = p_invoice_id;
 ```
 

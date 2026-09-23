@@ -10,7 +10,8 @@
     "db:types": "supabase gen types typescript --linked --schema public > src/types/database.types.ts"
   },
   "dependencies": {
-    "@supabase/ssr": "^0.12.7",
+    "@clerk/nextjs": "^7.9.4",
+    "@clerk/ui": "^1.33.1",
     "@supabase/supabase-js": "^2.117.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.4.0",

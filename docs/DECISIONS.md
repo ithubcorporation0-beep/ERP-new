@@ -121,3 +121,15 @@ You replied "yes" to the decision list = use Claude's recommendation for every d
 | 8-04 | 2026-09-23 | `private.org_limits()` moved from Step 8 to Step 11 (first user: invitations); demo seed data moved to Step 10 (needs login pages to be useful). | Keep each step small; no unused code. | Claude |
 | 8-05 | 2026-09-23 | Database tests can be run two ways: `npx supabase test db --linked` (needs Docker) **or** by pasting the test file into the Supabase SQL Editor, which shows a PASS/FAIL table ending with "51 of 51 checks passed". Tests roll back and leave no data. | You use Windows without Docker (D-59). | Claude |
 | 8-06 | 2026-09-23 | `npm run db:types` regenerates `src/types/database.types.ts` from the linked project. | One command after every migration. | Claude |
+
+## Login provider change (2026-09-23)
+
+| # | Date | Decision | Why | Decided by |
+|---|---|---|---|---|
+| D-62 | 2026-09-23 | **Clerk** handles sign-up, login, email verification, password reset and new-device checks; **Supabase** keeps database, files and RLS, trusting Clerk tokens (third-party auth). | You preferred Clerk's ready-made login screens (answer: "Clerk login + Supabase data"). | You |
+| 9-01 | 2026-09-23 | Database user ids are Clerk ids (`text`, e.g. `user_2abc…`); security helpers read them with `private.current_user_id()` (`auth.jwt() ->> 'sub'`), never `auth.uid()`. Step 8 migration edited (it was not applied to your project yet). | Clerk ids are not UUIDs; `auth.uid()` would fail. | Claude |
+| 9-02 | 2026-09-23 | `profiles` rows are created/updated by our server right after login (`/auth/continue`) from Clerk's server data, with the admin client (allowed use #1). No Clerk webhook in V1. | Works on your computer without a public webhook address; details never come from the browser. | Claude |
+| 9-03 | 2026-09-23 | Name, email, password and 2-step login are managed in Clerk's account menu; users edit only phone (and later business details) in our profile page. | One source of truth for identity. | Claude |
+| 9-04 | 2026-09-23 | `src/proxy.ts` only runs `clerkMiddleware()`; every page/layout checks login and role itself. | Clerk deprecated route lists in the proxy; matches our plan (03 §2.2). | Claude |
+| 9-05 | 2026-09-23 | Removed `@supabase/ssr`, the Supabase login actions/email templates and the browser Supabase client (unused in V1). Added `@clerk/nextjs`, `@clerk/ui` (shadcn theme), `zod`. | Replaced by Clerk. | Claude |
+| 9-06 | 2026-09-23 | Clerk tokens need `role: authenticated` (Clerk dashboard → Supabase integration). Without it Supabase refuses everything — tested: safe failure. | Required by Supabase third-party auth. | Claude |

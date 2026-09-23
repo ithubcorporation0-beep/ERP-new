@@ -65,7 +65,7 @@ Every phase also has these standard rules (not repeated below): migrations expla
 | Objective | The app can talk to Supabase safely |
 | Files / modules | `.env.local`, `.env.example`, `src/lib/env.ts`, `src/lib/supabase/{client,server,proxy,admin}.ts`, `src/proxy.ts` (or `middleware.ts`), `src/app/health/page.tsx`, `supabase/config.toml` |
 | Dependencies | Phase 1; D-56, D-57 (region) |
-| Deliverables | Packages `@supabase/ssr`, `@supabase/supabase-js`, `server-only`, CLI via `npx supabase`; browser/server/proxy clients per the official docs **for the installed versions**; admin client marked server-only; env check with clear messages; `/health` page shows "Supabase connected" or a clear error; CLI linked to the dev project |
+| Deliverables | Packages `@supabase/supabase-js` (`@supabase/ssr` later removed — D-62), `server-only`, CLI via `npx supabase`; browser/server/proxy clients per the official docs **for the installed versions**; admin client marked server-only; env check with clear messages; `/health` page shows "Supabase connected" or a clear error; CLI linked to the dev project |
 | ACTION REQUIRED FROM ME | Create Supabase project `saas-app-dev` (region D-57), save DB password privately; paste URL + publishable key + secret key into `.env.local` yourself (never into the chat); run `npx supabase login` and `npx supabase link`; add the same variables in Vercel (Preview + Production) and Redeploy |
 | Test checklist | `/health` locally → connected; on Vercel → connected; searching the built browser files for the secret key finds nothing |
 | Definition of done | Connected locally and on Vercel; no secret in git or browser code |
@@ -87,11 +87,11 @@ Every phase also has these standard rules (not repeated below): migrations expla
 | | |
 |---|---|
 | Objective | People can sign up, verify, log in, log out and reset passwords |
-| Files / modules | `src/app/(auth)/*`, `src/app/auth/confirm/route.ts`, `src/app/auth/signout/route.ts`, `src/app/(account)/account-disabled`, `src/features/auth/*`, `src/lib/auth/*` |
+| Files / modules | `src/app/(auth)/*` (Clerk `<SignIn/>` / `<SignUp/>`), `src/app/auth/continue`, `src/app/(account)/account-disabled`, `src/components/layout/site-header.tsx`, `src/lib/auth/*`, `src/proxy.ts` (`clerkMiddleware`) |
 | Dependencies | Phase 3; D-35, D-36 |
-| Deliverables | Pages `/signup`, `/login`, `/forgot-password`, `/reset-password`, `/verify-email`, `/account-disabled`; email confirmation route; logout; `zod`, `react-hook-form`, `@hookform/resolvers`, `sonner`; protection of `/app`, `/platform`, account pages; safe `next` redirects |
-| ACTION REQUIRED FROM ME | Supabase → Authentication → URL Configuration (Site URL + Redirect URLs); edit email templates (exact text given); check "Confirm email" is on |
-| Test checklist | Sign up → email → confirm → logged in; wrong password → generic error; forgot password → email → new password works; `/app/x` while logged out → login; logout works; note the built-in email hourly limit |
+| Deliverables | Clerk (D-62): `/login`, `/signup` (with email code, forgot password, new-device check), `/auth/continue` (profile copied from Clerk), `/account-disabled`, header Log in / Sign up / account menu; Supabase client sends the Clerk token; packages `@clerk/nextjs`, `@clerk/ui`, `zod` |
+| ACTION REQUIRED FROM ME | Create a Clerk account + application; activate the Supabase integration in Clerk; add Clerk as third-party provider in Supabase; put the Clerk keys in `.env.local` and Vercel |
+| Test checklist | Sign up → 6-digit email code → logged in, account menu visible; `profiles` row has name + email; wrong password → Clerk error; forgot password (inside login) works; log out works; `/auth/continue` while logged out → `/login`; `/health` shows Clerk keys present |
 | Definition of done | All auth flows work locally and on the Preview link |
 
 ### Phase 5 — Onboarding, role routing, app shell (Step 10)

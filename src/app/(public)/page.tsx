@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { SiteHeader } from "@/components/layout/site-header";
 import { APP_DESCRIPTION, APP_NAME } from "@/lib/site";
 
 const features = [
@@ -37,11 +38,7 @@ const features = [
 export default function HomePage() {
   return (
     <div className="flex flex-1 flex-col">
-      <header className="border-b">
-        <div className="mx-auto flex h-16 w-full max-w-5xl items-center px-4 sm:px-6">
-          <span className="text-lg font-semibold">{APP_NAME}</span>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-12 px-4 py-12 sm:px-6 sm:py-20">
         <section className="flex flex-col gap-4 text-center">
@@ -52,7 +49,7 @@ export default function HomePage() {
             {APP_DESCRIPTION}
           </p>
           <p className="text-sm text-muted-foreground">
-            Sign-up and login are coming soon.
+            Create your free account to get started.
           </p>
         </section>
 

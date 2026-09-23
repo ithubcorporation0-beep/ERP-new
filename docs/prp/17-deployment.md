@@ -78,14 +78,15 @@ Environment variables per environment: `13-apis-env.md` §2.2. Supabase Auth URL
 - **Vercel Hobby (free) is for personal, non-commercial use only.** A SaaS that charges customers must use **Vercel Pro** (paid per team member per month — check the current price).
 - **Supabase Free projects pause after about a week without activity** and have tighter limits (database size, storage, email). A paused project means the website stops working until you un-pause it. Real customers need **Supabase Pro** (paid per month per organization, plus usage — check the current price).
 - Free plans are fine for Steps 5–23 (building and testing). **Upgrade both before the first real customer** (Step 24).
-- Supabase built-in email is for testing only; production needs custom SMTP (D-33).
+- **Clerk** (D-62) is free up to a monthly-user limit, then paid (card, US dollars) — check clerk.com/pricing. Production needs a Clerk **production instance** on your own domain (DNS records shown by Clerk).
+- Login emails are sent by Clerk; the email provider (D-33) is needed only for invitation emails.
 
 ## 8. Launch checklist (summary — full version in Step 24)
 
 1. Production Supabase project created (region D-57), Pro plan.
 2. All migrations applied to production; `seed.sql` not applied.
 3. Storage buckets exist (created by migrations); check policies in the dashboard.
-4. Auth: Site URL + Redirect URLs for the real domain; email templates; custom SMTP; confirm email on; password rules; rate limits reviewed.
+4. Clerk production instance (your domain, DNS records), Supabase integration activated in Clerk, Clerk production domain added in Supabase third-party auth; password rules; sign-up mode.
 5. Vercel Production env variables point to the prod project; Vercel Pro; function region set.
 6. Custom domain + HTTPS; email domain verified.
 7. Your platform admin account created in prod (safe SQL given in Step 10).

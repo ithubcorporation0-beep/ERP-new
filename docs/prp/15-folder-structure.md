@@ -45,7 +45,7 @@ ERP-new/
 │   └── e2e/                       Browser tests (optional, D-61)
 │
 └── src/
-    ├── proxy.ts                   Session refresh + logged-out redirect (named middleware.ts on older Next.js)
+    ├── proxy.ts                   Clerk session handling (named middleware.ts on older Next.js)
     │
     ├── app/
     │   ├── layout.tsx             Root layout: <html>, font, toasts
@@ -57,17 +57,12 @@ ERP-new/
     │   │   ├── page.tsx           Home  → /
     │   │   └── pricing/page.tsx   → /pricing
     │   │
-    │   ├── (auth)/                Login-related pages sharing a centred card layout
+    │   ├── (auth)/                Clerk login pages sharing a centred layout
     │   │   ├── layout.tsx
-    │   │   ├── login/page.tsx
-    │   │   ├── signup/page.tsx
-    │   │   ├── forgot-password/page.tsx
-    │   │   ├── reset-password/page.tsx
-    │   │   └── verify-email/page.tsx
+    │   │   ├── login/[[...login]]/page.tsx     Clerk <SignIn/> (incl. forgot password, new-device code)
+    │   │   └── signup/[[...signup]]/page.tsx   Clerk <SignUp/> (incl. email code)
     │   │
-    │   ├── auth/                  Route Handlers (no pages)
-    │   │   ├── confirm/route.ts   Email link handler (verification, reset)
-    │   │   └── signout/route.ts   Log out (POST)
+    │   ├── auth/continue/page.tsx After every login: copy profile from Clerk, then open the right page
     │   │
     │   ├── (account)/             Logged-in pages outside any organization
     │   │   ├── layout.tsx
@@ -120,9 +115,7 @@ ERP-new/
     │
     ├── lib/
     │   ├── supabase/
-    │   │   ├── client.ts          Browser client (publishable key)
-    │   │   ├── server.ts          Server client (user's session cookies)
-    │   │   ├── proxy.ts           Session refresh helper used by src/proxy.ts
+    │   │   ├── server.ts          Server client (sends the user's Clerk token → RLS applies)
     │   │   └── admin.ts           Secret-key client — `import 'server-only'` (03-architecture §4.1)
     │   ├── auth/                  requireUser, requireMembership, requirePlatformAdmin, resolveHomePath
     │   ├── permissions.ts         Role → allowed modules/actions map (for menus and server checks; mirrors 02)
@@ -150,17 +143,18 @@ Rule 11 of `CLAUDE.md`: every package is announced before it is installed. Plann
 | `next` 16, `react` 19, `react-dom`, `typescript`, `tailwindcss` 4, `eslint` | The base app (installed by `create-next-app`) | 5 ✅ installed |
 | shadcn/ui (preset "radix-nova") + the packages it adds: `shadcn` (shared shadcn styles), `radix-ui` (accessible building blocks), `class-variance-authority` (button/badge style variants), `cn` (merges CSS class names — shadcn's replacement for `clsx` + `tailwind-merge`), `lucide-react` (icons), `tw-animate-css` (small animations) | UI components | 5 ✅ installed |
 | `sonner` | Toast pop-ups (shadcn's toast component) | 5/9 |
-| `@supabase/ssr`, `@supabase/supabase-js` | Talking to Supabase with cookie sessions | 7 |
+| `@supabase/supabase-js` | Talking to Supabase (with the Clerk token) | 7 ✅ |
+| `@clerk/nextjs`, `@clerk/ui` | Clerk login screens, session checks, shadcn theme (D-62) | 9 ✅ |
 | `server-only` | Makes the build fail if server code is imported into the browser | 7 |
 | `supabase` (CLI, run with `npx`, dev dependency) | Migrations, type generation, tests | 7 |
-| `zod` | Server-side validation | 9 |
-| `react-hook-form`, `@hookform/resolvers` | Comfortable forms that use the same Zod schemas (shadcn Form) | 9 |
+| `zod` | Server-side validation | 9 ✅ |
+| `react-hook-form`, `@hookform/resolvers` | Comfortable forms that use the same Zod schemas (shadcn Form) — only if our own forms need it (Step 10+) | 10 |
 | `date-fns` + `date-fns-tz` (or `@date-fns/tz`) | Date maths and timezone display | 13 |
 | `vitest` (dev) | Unit tests | 15 |
 | `recharts` (via shadcn charts) | Dashboard charts | 20 |
 | `@playwright/test` (dev, optional) | Browser tests (D-61) | 23 |
 
-Not planned: state-management libraries, ORMs (database helper libraries), CSS frameworks other than Tailwind, `@supabase/auth-helpers-*` (deprecated).
+Not planned: state-management libraries, ORMs (database helper libraries), CSS frameworks other than Tailwind, `@supabase/auth-helpers-*` (deprecated), `@supabase/ssr` (not needed with Clerk).
 
 ## 4. Decisions for this file (answered 2026-09-23 — "use recommendation")
 

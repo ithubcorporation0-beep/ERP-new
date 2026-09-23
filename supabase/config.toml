@@ -247,15 +247,6 @@ otp_expiry = 3600
 # subject = "You have been invited"
 # content_path = "./supabase/templates/invite.html"
 
-# Our own email templates (the same text is pasted into the Supabase dashboard
-# for the online project — see docs/PROJECT_STATUS.md "Pending actions").
-[auth.email.template.confirmation]
-subject = "Confirm your email"
-content_path = "./supabase/templates/confirmation.html"
-
-[auth.email.template.recovery]
-subject = "Reset your password"
-content_path = "./supabase/templates/recovery.html"
 
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]
@@ -365,7 +356,8 @@ enabled = false
 # user_pool_id = "my-user-pool-id"
 # user_pool_region = "us-east-1"
 
-# Use Clerk as a third-party provider alongside Supabase Auth.
+# Logins are handled by Clerk (D-62). For local testing, set enabled = true and the
+# domain of your Clerk development instance (Clerk dashboard → Supabase integration).
 [auth.third_party.clerk]
 enabled = false
 # Obtain from https://clerk.com/setup/supabase

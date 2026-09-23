@@ -20,10 +20,11 @@
 
 ## Stage 3 — Foundation
 - [x] STEP 8 — Database foundation: migration + tests + types written and tested locally
-- [ ] STEP 8 — You: OK the migration, `npx supabase db push`, run tests in SQL Editor (expect 51 of 51)
+- [ ] STEP 8 — You: `npx supabase db push` (migration reworked for Clerk ids), run tests in SQL Editor (expect 51 of 51)
 - [ ] Seed data (two demo organizations with real logins) — moved to Step 10, when login pages exist
 - [ ] `private.org_limits()` — moved to Step 11 (its first user: invitations)
-- [ ] STEP 9 — Authentication
+- [x] STEP 9 — Authentication with Clerk (D-62) — built and tested locally
+- [ ] STEP 9 — You: Clerk account, Supabase integration, keys (see PROJECT_STATUS "Pending actions")
 - [ ] STEP 10 — Onboarding, role routing, app shell
 - [ ] STEP 11 — Invitations & user management
 

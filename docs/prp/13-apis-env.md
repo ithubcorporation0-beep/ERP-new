@@ -14,14 +14,15 @@ Only services that a real V1 feature needs are included.
 | Service | Used for | Keys needed | When |
 |---|---|---|---|
 | **Supabase** (Database, Auth, Storage) | Everything: data, login, files | Project URL, publishable key, secret key | Step 7 |
-| **Email provider with SMTP** (D-33: Resend) | (a) Supabase Auth emails in production (signup confirmation, password reset) via custom SMTP; (b) invitation emails from our server | SMTP credentials (entered in the Supabase dashboard, not in our code) + API key for our server | Supabase built-in email for testing until then; **required before real customers** (Step 24). Invitation emails can start as soon as D-33 is set up (copy-link works before that — D-34) |
+| **Clerk** (D-62) | Sign-up, login, email verification, password reset, new-device checks, account menu | Publishable key, secret key | Step 9 |
+| **Email provider** (D-33: Resend) | Invitation emails from our server (login emails are sent by Clerk) | SMTP credentials (entered in the Supabase dashboard, not in our code) + API key for our server | Supabase built-in email for testing until then; **required before real customers** (Step 24). Invitation emails can start as soon as D-33 is set up (copy-link works before that — D-34) |
 
 ### 1.2 OPTIONAL FOR V1
 
 | Service | Used for | Recommendation |
 |---|---|---|
 | Error monitoring (e.g. Sentry) | Seeing crashes that users hit | **Not in V1** — Vercel's built-in logs are enough at the start (D-54) |
-| Separate rate-limit store (e.g. Upstash Redis) | Counting login/invite attempts | **Not needed** — Supabase Auth has built-in limits and our own limits use a small PostgreSQL table (D-53) |
+| Separate rate-limit store (e.g. Upstash Redis) | Counting login/invite attempts | **Not needed** — Clerk protects login/sign-up (bot protection, rate limits) and our own limits use a small PostgreSQL table (D-53) |
 
 ### 1.3 FUTURE (not V1)
 
@@ -47,6 +48,8 @@ Only services that a real V1 feature needs are included.
 | `SUPABASE_SECRET_KEY` | **SECRET — server only** | Only `src/lib/supabase/admin.ts` (the 2–3 uses in `03-architecture.md` §4.1) | ✅ | The new "secret" key (`sb_secret_…`); legacy `service_role` only if no secret key exists. **Never** `NEXT_PUBLIC_`, never in browser code, never logged |
 | `EMAIL_API_KEY` | **SECRET — server only** | Invitation emails (server) | After D-33 | Name may change to match the provider (e.g. `RESEND_API_KEY`) |
 | `EMAIL_FROM` | Secret (server only; not sensitive but server-side) | Invitation emails | After D-33 | e.g. `YourApp <no-reply@your-domain>` |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | **Public** | Browser + server (Clerk) | ✅ | Clerk dashboard → API keys (`pk_test_…` / `pk_live_…`) |
+| `CLERK_SECRET_KEY` | **SECRET — server only** | Server (Clerk checks, profile copy) | ✅ | Clerk dashboard → API keys (`sk_test_…` / `sk_live_…`). Never `NEXT_PUBLIC_`, never in chat |
 | `NEXT_PUBLIC_APP_NAME` | **Public** | Page titles, emails, header | ✅ | Product name (D-52) |
 
 **Not** environment variables of the app:
@@ -69,6 +72,7 @@ Only services that a real V1 feature needs are included.
 | `NEXT_PUBLIC_SITE_URL` | `https://your-domain` | *(leave empty)* | `http://localhost:3000` |
 | `EMAIL_API_KEY`, `EMAIL_FROM` | prod values | test values or empty (copy-link only) | test |
 | `NEXT_PUBLIC_APP_NAME` | name | name | name |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` | Clerk **production** instance keys | Clerk development keys | development keys |
 
 Until the production Supabase project exists (Step 24), Production also points to the dev project.
 
@@ -79,19 +83,26 @@ Until the production Supabase project exists (Step 24), Production also points t
 - On startup the server checks that required variables exist and shows a clear error ("Missing NEXT_PUBLIC_SUPABASE_URL — see .env.example") instead of a confusing crash. It never prints their values.
 - If a secret leaks (e.g. pasted in a chat or committed): rotate it in the Supabase dashboard immediately, update `.env.local` and Vercel, redeploy.
 
-## 3. Supabase dashboard settings that must match
+## 3. Dashboard settings that must match
 
-| Setting (menu names may change slightly) | Development project | Production project |
+**Clerk dashboard** (menu names may change slightly):
+
+| Setting | Development instance | Production instance |
 |---|---|---|
-| Authentication → URL Configuration → **Site URL** | `http://localhost:3000` | `https://your-domain` |
-| Authentication → URL Configuration → **Redirect URLs** | `http://localhost:3000/**` and `https://*-<your-vercel-team>.vercel.app/**` (preview links) and `https://<your-app>.vercel.app/**` | `https://your-domain/**` (+ `https://www.your-domain/**` if used) |
-| Authentication → Email templates | Links point to `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=…` (exact text given in Step 9) | same |
-| Authentication → Providers → Email | Email + password on, "Confirm email" **on** | same |
-| Authentication → SMTP settings | Built-in (testing) | Custom SMTP from D-33 |
-| Authentication → Rate limits | Defaults | Review before launch (Step 23) |
-| Authentication → Password settings | Minimum length 8 (D-35) | same (+ leaked-password check on paid plan) |
+| **Integrations → Supabase → Activate** | ✅ (adds `role: authenticated` to login tokens; shows the **Clerk domain**) | ✅ |
+| User & authentication → Email | Email address required + verified; password on | same |
+| Password rules | at least 8 characters, letters + numbers (D-35) | same |
+| Paths / allowed origins | `http://localhost:3000` | your domain |
+| Restrictions → sign-up mode | Public (D-36) | Public |
+
+**Supabase dashboard:**
+
+| Setting | Development project | Production project |
+|---|---|---|
+| Authentication → Sign In / Providers → **Third-party auth → Add provider → Clerk** | paste the Clerk **development** domain | paste the Clerk **production** domain |
 | API settings → **Exposed schemas** | `public` only (never `private`) | same |
 | Storage buckets | Created by migrations, not by hand | same |
+| Authentication → URL configuration / email templates / SMTP | not used for logins any more (Clerk) | not used |
 
 ## 4. Decisions for this file (answered 2026-09-23 — "use recommendation")
 

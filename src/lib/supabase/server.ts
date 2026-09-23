@@ -1,31 +1,20 @@
 import "server-only";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { auth } from "@clerk/nextjs/server";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { requireSupabasePublicEnv } from "@/lib/env";
 import type { Database } from "@/types/database.types";
 
 // Supabase client for Server Components, Server Actions and Route Handlers.
-// It acts as the logged-in user (session from cookies), so RLS applies to every query.
+// Every request carries the logged-in user's Clerk token, which Supabase checks
+// ("third-party auth"). So it acts as that user and RLS applies to every query.
+// Not logged in → no token → Supabase treats the request as anonymous (sees nothing).
 // Create a new client for every request — never share one between requests.
 export async function createClient() {
   const { url, publishableKey } = requireSupabasePublicEnv();
-  const cookieStore = await cookies();
 
-  return createServerClient<Database>(url, publishableKey, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
-      setAll(cookiesToSet) {
-        try {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options),
-          );
-        } catch {
-          // Server Components cannot set cookies. This is safe to ignore because
-          // src/proxy.ts refreshes the session cookies on every request.
-        }
-      },
+  return createSupabaseClient<Database>(url, publishableKey, {
+    async accessToken() {
+      return (await auth()).getToken();
     },
   });
 }

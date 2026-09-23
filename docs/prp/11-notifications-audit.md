@@ -40,7 +40,7 @@ The person who caused the event never gets a notification about it.
 "Linked CLIENT users" = active memberships with role `client` and `customer_id` = the record's customer.
 
 Notes:
-- `invitation_received` is stored with the **inviting** organization's `organization_id`, but its RLS lets only the recipient read it. It does not require membership of that organization (special case in the notifications select policy: `recipient_user_id = auth.uid()` and type `invitation_received`).
+- `invitation_received` is stored with the **inviting** organization's `organization_id`, but its RLS lets only the recipient read it. It does not require membership of that organization (special case in the notifications select policy: `recipient_user_id = private.current_user_id()` and type `invitation_received`).
 - Overdue-invoice and due-task reminders need a scheduled job and are **V2**; in V1 overdue items are highlighted on dashboards.
 
 ### 1.3 How notifications are created
@@ -93,7 +93,7 @@ A daily database job (Supabase **pg_cron** — a built-in scheduler that runs SQ
 
 | Field | Source |
 |---|---|
-| Who | `actor_user_id` = `auth.uid()` (empty for system jobs) |
+| Who | `actor_user_id` = the Clerk user id of the logged-in person (empty for system jobs) |
 | What action | `insert` / `update` / `delete`, or a named event (`invoice.issued`, `invoice.voided`, `payment.recorded`, `payment.reversed`, `member.role_changed`, `member.disabled`, `ownership.transferred`, `invitation.created`, `invitation.accepted`, `organization.suspended`, `subscription.activated`) |
 | Which record | `table_name` + `record_id` |
 | When | `created_at` |

@@ -8,7 +8,8 @@ import type { Database } from "@/types/database.types";
 //
 // Allowed uses only (docs/prp/03-architecture.md §4.1), each AFTER an explicit
 // permission check in code and with an activity-log entry:
-//   1. PLATFORM_ADMIN disables / re-enables a user account in Supabase Auth.
+//   1. Copy the logged-in user's name and email from Clerk into `profiles` (D-62) —
+//      the details come from Clerk's server, never from the browser.
 //   2. PLATFORM_ADMIN permanently deletes an organization's data and files (D-24).
 // (Temporary: the /health page uses it once to check that the secret key is valid.)
 export function createAdminClient() {

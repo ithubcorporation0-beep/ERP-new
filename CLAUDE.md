@@ -8,7 +8,7 @@ Claude Code: read and follow these rules in EVERY session.
 
 ## Project
 - Multi-tenant SaaS business management software. Full brief: `docs/MASTER_PROMPT.md`. Approved plan: `docs/prp/`.
-- Stack (fixed): Next.js App Router + TypeScript + Tailwind + shadcn/ui, Supabase (Postgres, Auth, Storage, RLS), GitHub, Vercel.
+- Stack (fixed): Next.js App Router + TypeScript + Tailwind + shadcn/ui, Supabase (Postgres, Storage, RLS), Clerk for login (D-62, Supabase third-party auth), GitHub, Vercel.
 - Before any architecture change: explain why, wait for my OK, then record it in `docs/DECISIONS.md`.
 
 ## How we work

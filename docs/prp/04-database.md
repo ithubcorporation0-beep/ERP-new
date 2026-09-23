@@ -61,7 +61,7 @@ PLATFORM
   platform_settings,  platform_announcements
 
 PEOPLE
-  auth.users (Supabase) ──1:1── profiles
+  Clerk user (login, D-62) ──1:1── profiles   (profiles.id = Clerk user id)
   organizations ──< memberships >── profiles        (one row per person per organization)
   organizations ──< invitations                     (becomes a membership when accepted)
   organizations ──1:1── organization_settings
@@ -279,12 +279,12 @@ Index: `(is_published, starts_at)`. Read by business users (not clients — D-30
 ### 4.2 People tables
 
 #### `profiles`
-One row per user account; created automatically by a trigger when someone signs up in Supabase Auth.
+One row per user account. Logins are handled by Clerk (D-62): our server creates/updates the row right after login with the name and email it reads from Clerk's server.
 
 | Column | Type | Req | Notes |
 |---|---|---|---|
-| id | uuid | ✅ | PK, **same as `auth.users.id`**, on delete cascade |
-| email | text | ✅ | Copied from Auth by trigger; users cannot edit it here |
+| id | text | ✅ | PK, **the Clerk user id** (e.g. `user_2abc…`). All columns that point to a person (`user_id`, `created_by`, `invited_by`, …) are therefore `text` |
+| email | text | ✅ | Copied from Clerk by the server at every login; users cannot edit it here |
 | full_name | text | ✅ | 1–100 chars |
 | phone | text | | |
 | avatar_path | text | | Profile photo in storage — not used in V1 (D-45), kept for later |
@@ -293,7 +293,7 @@ One row per user account; created automatically by a trigger when someone signs 
 | last_organization_id | uuid | | → organizations, on delete set null. Remembers the last organization opened (convenience only, never used for security) |
 
 Indexes: unique `lower(email)`.
-A trigger blocks users from changing their own `email`, `status`, `disabled_reason`.
+Column grants let users change only `phone` and `last_organization_id`; name and email come from Clerk, status only from PLATFORM_ADMIN.
 **There is no `role` column here on purpose.** Roles live only in `memberships` and `platform_admins`.
 
 #### `memberships`
@@ -681,7 +681,7 @@ Retention: D-27.
 | `set_updated_at()` | trigger | Sets `updated_at = now()` on every update |
 | `force_created_by()` | trigger | Sets `created_by` / `uploaded_by` / `author_user_id` = logged-in user on insert |
 | `prevent_org_change()` | trigger | Blocks changing `organization_id` |
-| `handle_new_user()` | trigger on `auth.users` | Creates the `profiles` row at signup |
+| `private.current_user_id()` | function | The logged-in person's Clerk id, read from the verified login token (`auth.jwt() ->> 'sub'`) |
 | `audit_row_change()` | trigger | Writes `activity_logs` |
 | `recalc_invoice_totals()` | trigger on `invoice_items` | Calculates line amounts and invoice totals |
 | `apply_payment_to_invoice()` | trigger on `payments` | Updates `amount_paid` and invoice status |

@@ -46,12 +46,12 @@ Words used above:
 ### 2.2 Server side (Next.js on Vercel)
 
 1. **proxy/middleware** (every request):
-   - refreshes the Supabase session cookie (`@supabase/ssr` pattern),
+   - keeps the Clerk login session fresh (`clerkMiddleware()`, D-62),
    - if the user is not logged in and the page is under `/app` or `/platform` or `/onboarding` or `/select-organization`, redirects to `/login`.
    - It does **not** decide roles. Reason: middleware can be bypassed in some situations (a real security bug in Next.js in 2025 allowed exactly that), and it runs before we know which organization is being opened. So it is only a first filter, never the real protection.
 2. **Layouts and pages under `/app/[orgSlug]`** call one shared server helper, planned as:
    `requireMembership(orgSlug, allowedRoles?)` →
-   - reads the logged-in user from Supabase Auth (verified with the Supabase server, not just trusted from the cookie),
+   - reads the logged-in user from Clerk (`auth()`, which verifies the login token) and makes sure their `profiles` row exists,
    - checks `profiles.status = 'active'`,
    - loads the membership for that **slug** from the database,
    - checks `memberships.status = 'active'` and `organizations.status = 'active'` (else "suspended" / "no access" page),
@@ -95,8 +95,8 @@ Words used above:
 
 | Client | Key used | Where it runs | RLS applies? | Used for |
 |---|---|---|---|---|
-| Browser client | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Browser | Yes | Auth events in the browser only (V1) |
-| Server client | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` + user's session cookie | Server Components, Server Actions, Route Handlers, proxy | **Yes** (acts as the logged-in user) | **Almost everything** |
+| Browser client | — | — | — | Not used in V1 (login screens are Clerk's; business data is loaded on the server) |
+| Server client | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` + the user's Clerk login token | Server Components, Server Actions, Route Handlers, proxy | **Yes** (acts as the logged-in user) | **Almost everything** |
 | Admin client | `SUPABASE_SECRET_KEY` | Server only (file marked `server-only`, so the build fails if a browser file imports it) | **No — bypasses RLS** | Only the short list below |
 
 ### 4.1 When the admin (secret key) client is allowed — the complete list
@@ -104,9 +104,10 @@ Words used above:
 The admin client ignores all security rules, so it is used only where there is no safe alternative. Each use:
 (a) lives in one server-only file, (b) runs **after** an explicit permission check in code, (c) writes an activity log entry, (d) never returns secret data to the browser.
 
-1. **Disabling / re-enabling a user account in Supabase Auth** — by PLATFORM_ADMIN only (so a disabled person cannot even log in). Needs the Auth admin API.
-2. **Sending an invitation email through Supabase Auth** to a person who has no account yet — only if D-34 chooses this method. The recommendation in `05-auth-onboarding.md` §13 (copy-link + our own email provider) removes this item.
-3. **Permanently deleting an organization's data and files** after the 30-day waiting period (D-24) — by PLATFORM_ADMIN only.
+1. **Copying the logged-in person's name and email from Clerk into `profiles`** (on `/auth/continue`, D-62). The details come from Clerk's server with our Clerk secret key, never from the browser; only name and email are written.
+2. **Permanently deleting an organization's data and files** after the 30-day waiting period (D-24) — by PLATFORM_ADMIN only.
+
+Disabling a whole account is done with Clerk's "ban" (Clerk secret key) plus `profiles.status`; it no longer needs the Supabase secret key.
 
 Everything else — including accepting invitations, creating an organization, issuing invoice numbers, recording payments — is done with the user's own session plus carefully written `security definer` database functions (functions that run with extra rights but check permissions themselves). Explained in `06-authorization-rls.md`.
 

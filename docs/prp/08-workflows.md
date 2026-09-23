@@ -18,8 +18,8 @@ Common to every workflow below:
 |---|---|
 | Started by | A new visitor |
 | Permissions | None to start; verified email to create an organization |
-| Steps | 1. `/signup` → 2. confirmation email → 3. `/auth/confirm` → 4. `/onboarding` → 5. fill name, slug, currency, timezone → 6. `create_organization()` → 7. `/app/<slug>` owner dashboard with getting-started checklist |
-| Database | `auth.users` (Supabase), `profiles` (trigger), `organizations`, `organization_settings`, `memberships` (owner), `expense_categories` (starter, from Step 17), `subscriptions` (trial, from Step 22), `activity_logs` |
+| Steps | 1. `/signup` (Clerk) → 2. email code from Clerk → 3. `/auth/continue` (profile copied from Clerk) → 4. `/onboarding` → 5. fill name, slug, currency, timezone → 6. `create_organization()` → 7. `/app/<slug>` owner dashboard with getting-started checklist |
+| Database | Clerk user (outside our database), `profiles` (copied by the server), `organizations`, `organization_settings`, `memberships` (owner), `expense_categories` (starter, from Step 17), `subscriptions` (trial, from Step 22), `activity_logs` |
 | Notified | The new owner (welcome notification) |
 | Errors | Email already used (generic "check your email" message); weak password; slug taken / invalid / reserved; signups closed (D-36); too many owned organizations (D-37); email not verified |
 

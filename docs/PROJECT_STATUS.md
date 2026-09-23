@@ -3,7 +3,7 @@
 Last updated: 2026-09-23
 
 ## Current stage
-STAGE 3 — FOUNDATION. Step 8 migration + tests written and tested here; NOT yet applied to your Supabase project (waiting for your OK).
+STAGE 3 — FOUNDATION. Logins moved to **Clerk** (D-62). Step 8 migration reworked for Clerk ids (not yet applied to your Supabase project). Step 9 (login with Clerk) built and tested here.
 
 ## Done
 - [x] Rules saved in `CLAUDE.md`
@@ -19,10 +19,19 @@ STAGE 3 — FOUNDATION. Step 8 migration + tests written and tested here; NOT ye
 - [ ] STEP 6 — first Vercel deployment: project imported, but the live site shows Vercel's 404 because GitHub has no `main` branch yet (default branch contains only `docs/`). Waiting for you to create `main`.
 - [x] STEP 7 (code) — Supabase packages installed; browser/server/proxy/admin clients; `src/proxy.ts` refreshes the login session and sends logged-out visitors of protected pages to `/login`; temporary `/health` page; Supabase CLI folder (`supabase/config.toml`). Dev project reference: `ifkkatuluzszzbaebamd` (not secret). Tested here: URL + publishable key accepted; secret key not yet added.
 - [x] STEP 8 (written, not applied) — migration `supabase/migrations/20260923065424_foundation.sql` (7 tables, helper functions, triggers, RLS, column grants, indexes) + 51 security tests `supabase/tests/001_foundation.test.sql` + TypeScript types `src/types/database.types.ts`. All 51 tests pass on a practice copy of Supabase's real database here.
-- [ ] STEP 9 (in progress, paused) — done so far: `zod`, input/label components, server actions for sign up / log in / forgot password / new password / resend email (`src/features/auth/`), safe-redirect helper, local Supabase login settings + email templates (`supabase/templates/`). Paused: you asked about Clerk — waiting for "stay with Supabase" or "switch to Clerk".
+- [x] STEP 9 — Login with **Clerk** (D-62): `/login`, `/signup` (email code, forgot password, new-device check), `/auth/continue` (copies name + email from Clerk into `profiles`), `/account-disabled`, header Log in / Sign up / account menu, Supabase client sends the Clerk token. Step 8 migration + 51 tests reworked for Clerk ids (all pass). Tested here with a temporary Clerk test app: Clerk forms load in our design; Supabase accepts real Clerk tokens; user sees only own org, cannot see another org, cannot change own role; forged token refused; profile copy from Clerk works.
 
 ## Next step
-You: read the plain-English summary of the Step 8 migration and reply OK. Then run `npx supabase db push` (dev project) and the tests in the Supabase SQL Editor. Still open from Steps 6–7: create GitHub `main`, add Vercel variables, `/health` green.
+You: the setup jobs below (Clerk + Supabase), then type "continue" for STEP 10 (onboarding: create an organization, role-based pages).
+
+## Pending actions for you (collected — do them when you are ready)
+1. **Security:** delete the Supabase secret keys you pasted in chat and create a new one; reset the database password (Supabase → Project Settings).
+2. **GitHub:** create the `main` branch from `claude/vibrant-galileo-mijszo` and make it the default (Vercel shows 404 until then).
+3. **Clerk:** create an account + application (clerk.com) → Integrations → **Supabase → Activate** → copy the Clerk domain.
+4. **Supabase:** Authentication → Sign In / Providers → **Third-party auth → Clerk** → paste the Clerk domain.
+5. **Keys** (never in chat): put `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` + `CLERK_SECRET_KEY` + the Supabase values in `.env.local` and in Vercel → Redeploy.
+6. **Database:** `npx supabase login`, `npx supabase link --project-ref ifkkatuluzszzbaebamd`, `npx supabase db push`; then run `supabase/tests/001_foundation.test.sql` in the SQL Editor (expect 51 of 51).
+7. **Check:** `npm run dev` → http://localhost:3000/health all green → sign up at http://localhost:3000/signup.
 
 ## Open decisions so far
 59 of 61 answered. Still open: **D-47** (plans, prices, limits — needed by Step 22) and **D-52** (product name, domain, brand colour — needed by Step 24).

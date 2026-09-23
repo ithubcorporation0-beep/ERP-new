@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { getSupabasePublicEnv } from "@/lib/env";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
 
 // TEMPORARY check page (Step 7). Shows only pass/fail — never any key or data.
 // Remove before launch (docs/prp/17-deployment.md §8).
@@ -16,6 +15,9 @@ type Check = { label: string; ok: boolean; detail: string };
 async function runChecks(): Promise<Check[]> {
   const env = getSupabasePublicEnv();
   const hasSecret = Boolean(process.env.SUPABASE_SECRET_KEY?.trim());
+  const hasClerk =
+    Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.trim()) &&
+    Boolean(process.env.CLERK_SECRET_KEY?.trim());
 
   const checks: Check[] = [
     {
@@ -24,6 +26,13 @@ async function runChecks(): Promise<Check[]> {
       detail: env
         ? "NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY are set."
         : "Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (see .env.example).",
+    },
+    {
+      label: "Clerk keys present",
+      ok: hasClerk,
+      detail: hasClerk
+        ? "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY are set."
+        : "Add NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY (see .env.example). Login will not work on Vercel without them.",
     },
     {
       label: "Secret key present (server only)",
@@ -57,24 +66,7 @@ async function runChecks(): Promise<Check[]> {
     });
   }
 
-  // 2. Does the server (cookie) client work?
-  try {
-    const supabase = await createClient();
-    const { error } = await supabase.auth.getClaims();
-    checks.push({
-      label: "Server login client works",
-      ok: !error,
-      detail: error ? "The server client could not read the session." : "OK (nobody is logged in yet — that is expected).",
-    });
-  } catch {
-    checks.push({
-      label: "Server login client works",
-      ok: false,
-      detail: "The server client could not be created.",
-    });
-  }
-
-  // 3. Is the secret key valid? (read-only call, result not shown)
+  // 2. Is the secret key valid? (read-only call, result not shown)
   if (hasSecret) {
     try {
       const admin = createAdminClient();
@@ -104,7 +96,7 @@ export default async function HealthPage() {
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-12">
       <h1 className="text-2xl font-semibold">
-        {allOk ? "✅ Supabase connected" : "❌ Supabase not connected yet"}
+        {allOk ? "✅ Supabase and Clerk connected" : "❌ Not fully connected yet"}
       </h1>
       <ul className="flex flex-col gap-3">
         {checks.map((c) => (
