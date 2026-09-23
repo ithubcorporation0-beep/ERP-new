@@ -658,7 +658,7 @@ The audit trail: who did what, when.
 |---|---|---|---|
 | id | bigint | ✅ | PK, auto-increasing number |
 | organization_id | uuid | | → organizations, on delete cascade. **Empty only for platform-level events** (e.g. plan created) |
-| actor_user_id | uuid | | → profiles. Empty = done automatically by the system |
+| actor_user_id | uuid | | ID of the person (profiles.id). **No foreign key on purpose**, so a log entry can never block a change. Empty = done automatically by the system |
 | action | text | ✅ | `insert` / `update` / `delete`, or a named event like `invoice.issued`, `member.role_changed`, `payment.reversed` |
 | table_name | text | ✅ | |
 | record_id | text | | ID of the changed row (text so it also fits composite keys) |

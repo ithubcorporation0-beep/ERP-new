@@ -2,6 +2,7 @@ import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { requireSupabasePublicEnv } from "@/lib/env";
+import type { Database } from "@/types/database.types";
 
 // Supabase client for Server Components, Server Actions and Route Handlers.
 // It acts as the logged-in user (session from cookies), so RLS applies to every query.
@@ -10,7 +11,7 @@ export async function createClient() {
   const { url, publishableKey } = requireSupabasePublicEnv();
   const cookieStore = await cookies();
 
-  return createServerClient(url, publishableKey, {
+  return createServerClient<Database>(url, publishableKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll();

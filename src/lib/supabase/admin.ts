@@ -1,6 +1,7 @@
 import "server-only";
 import { createClient } from "@supabase/supabase-js";
 import { requireSupabasePublicEnv } from "@/lib/env";
+import type { Database } from "@/types/database.types";
 
 // DANGER: this client uses the SECRET key and ignores all Row Level Security rules.
 // "server-only" above makes the build fail if browser code ever imports this file.
@@ -19,7 +20,7 @@ export function createAdminClient() {
     );
   }
 
-  return createClient(url, secretKey, {
+  return createClient<Database>(url, secretKey, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,

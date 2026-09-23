@@ -3,7 +3,7 @@
 Last updated: 2026-09-23
 
 ## Current stage
-STAGE 2 — SETUP. App created (Step 5); Supabase connection code written (Step 7 — waiting for your secret key in .env.local and Vercel).
+STAGE 3 — FOUNDATION. Step 8 migration + tests written and tested here; NOT yet applied to your Supabase project (waiting for your OK).
 
 ## Done
 - [x] Rules saved in `CLAUDE.md`
@@ -18,9 +18,10 @@ STAGE 2 — SETUP. App created (Step 5); Supabase connection code written (Step 
 - [x] STEP 5 — Next.js 16 app created in this folder (TypeScript, App Router, Tailwind 4, ESLint, `src/`), shadcn/ui (Radix, Nova preset), home page, 404 page, error page, `.gitignore` (blocks `.env*` except `.env.example`), `.env.example`, `README.md`. `npm run lint` and `npm run build` pass.
 - [ ] STEP 6 — first Vercel deployment: project imported, but the live site shows Vercel's 404 because GitHub has no `main` branch yet (default branch contains only `docs/`). Waiting for you to create `main`.
 - [x] STEP 7 (code) — Supabase packages installed; browser/server/proxy/admin clients; `src/proxy.ts` refreshes the login session and sends logged-out visitors of protected pages to `/login`; temporary `/health` page; Supabase CLI folder (`supabase/config.toml`). Dev project reference: `ifkkatuluzszzbaebamd` (not secret). Tested here: URL + publishable key accepted; secret key not yet added.
+- [x] STEP 8 (written, not applied) — migration `supabase/migrations/20260923065424_foundation.sql` (7 tables, helper functions, triggers, RLS, column grants, indexes) + 51 security tests `supabase/tests/001_foundation.test.sql` + TypeScript types `src/types/database.types.ts`. All 51 tests pass on a practice copy of Supabase's real database here.
 
 ## Next step
-You: (1) create `main` on GitHub so Vercel shows the site (Step 6); (2) add `SUPABASE_SECRET_KEY` to your `.env.local` and all Supabase variables in Vercel, then check `/health` locally and on Vercel (Step 7); (3) run `npx supabase login` and `npx supabase link`. Then type "continue" for Step 8.
+You: read the plain-English summary of the Step 8 migration and reply OK. Then run `npx supabase db push` (dev project) and the tests in the Supabase SQL Editor. Still open from Steps 6–7: create GitHub `main`, add Vercel variables, `/health` green.
 
 ## Open decisions so far
 59 of 61 answered. Still open: **D-47** (plans, prices, limits — needed by Step 22) and **D-52** (product name, domain, brand colour — needed by Step 24).
