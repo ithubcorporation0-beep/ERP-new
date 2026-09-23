@@ -51,6 +51,9 @@ Policies call small SQL functions so that the rules are written once and used ev
 | `private.org_writable(org uuid)` | boolean | The organization may be changed: subscription allows writing (D-25). Before Step 22 it simply returns true |
 | `private.can_write(org uuid, roles text[])` | boolean | `has_role(org, roles)` **and** `org_writable(org)` — used in every insert/update/delete policy |
 | `private.clients_see_tasks(org uuid)` | boolean | Value of `organization_settings.clients_can_see_tasks` |
+| `private.org_limits(org uuid)` | record | Plan limits + current usage (`12-billing-subscriptions.md` §5) |
+| `private.notify(...)` | — | Inserts notifications, skipping the acting user (`11-notifications-audit.md` §1.3) |
+| `private.audit_row_change()` | trigger | Writes `activity_logs` (`11-notifications-audit.md` §2.2) |
 
 Example (design sketch — the real code is written in Step 8):
 
@@ -113,7 +116,10 @@ Every such function in `public`:
 | `record_payment(...)` / `reverse_payment(payment, reason)` | OWNER, ADMIN, ACCOUNTANT | 16 |
 | `void_expense(expense, reason)` | OWNER, ADMIN, ACCOUNTANT | 17 |
 | `mark_notifications_read(ids)` / `mark_all_notifications_read(org)` | The recipient | 19 |
-| Platform functions (`set_organization_status`, `activate_subscription`, …) | PLATFORM_ADMIN | 22 |
+| `get_my_organizations()` | Any logged-in user (own memberships incl. suspended orgs: name, slug, status, role) | 10 |
+| `change_organization_currency(org, currency)` | OWNER, only before the first issued invoice | 10 |
+| `get_my_subscription(org)` | OWNER (full, without notes), ADMIN (plan, limits, usage) | 22 |
+| Platform functions (`set_organization_status`, `activate_subscription`, `void_subscription_payment`, `change_plan`, `set_account_status`) | PLATFORM_ADMIN | 22 |
 
 ## 5. RLS strategy per table
 
@@ -133,7 +139,7 @@ Abbreviations: **M(org)** = `is_member(org)`; **R(org, […])** = `has_role(org,
 
 | Action | Rule |
 |---|---|
-| select | own row (`user_id = ME`) **or** `R(organization_id, [owner, admin, manager])` (team list) **or** (employee/accountant) rows of members sharing a project with me (for names on tasks) **or** `PA` (counts only, via platform function) |
+| select | own row (`user_id = ME`) **or** `R(organization_id, [owner, admin, manager, accountant])` (team list for OWNER/ADMIN/MANAGER; ACCOUNTANT needs names shown on tasks but has no Team page) **or** (`employee`) rows of members sharing a project with me **or** `PA` (counts only, via platform function) |
 | insert | Fn only (`create_organization`, `accept_invitation`) |
 | update | Fn only (`change_member_role`, `set_member_status`, `transfer_ownership`, `leave_organization`) |
 | delete | none (disable instead) |
@@ -247,7 +253,7 @@ Issue / void / duplicate: Fn only (§4).
 | Action | Rule |
 |---|---|
 | select | You can see the document if you can see the record it is attached to, by role (matrix §3.9 in `02-roles-permissions.md`): OWNER/ADMIN all; MANAGER all except expense documents; ACCOUNTANT customer/invoice/expense documents + project/task documents (view, D-03); EMPLOYEE documents of tasks assigned to them and projects they are a member of; CLIENT only `visible_to_client = true` **and** linked to their customer (customer itself, their projects, their non-draft invoices, and tasks of their projects if `clients_see_tasks`) |
-| insert | Fn/server only after the upload check (`10-documents.md`); roles per matrix |
+| insert | Done by the `confirmUpload` Server Action after the upload check (`10-documents.md` §5): `W(org, roles allowed to upload to that kind of record — matrix §3.9)` **and** the linked record is visible to the user (checked with `exists` on the linked table, whose RLS applies); `uploaded_by` forced |
 | update | `W(org, [owner, admin, manager, accountant])`, column grants: `visible_to_client`, `file_name` |
 | delete | `W(org, [owner, admin])` or own upload (`uploaded_by = ME`) with upload rights |
 
@@ -257,7 +263,7 @@ Storage policies are tied to this table: a file can be downloaded only if the us
 
 | Action | Rule |
 |---|---|
-| select | `recipient_user_id = ME` (and `M(org)` so a removed member stops seeing that org's notifications) |
+| select | `recipient_user_id = ME` **and** (`M(org)` so a removed member stops seeing that org's notifications, **or** `type = 'invitation_received'` — `11-notifications-audit.md` §1.2) |
 | insert | Fn/trigger only |
 | update | Fn only (`mark_notifications_read`) — only `read_at` changes |
 | delete | none (automatic clean-up, D-27) |

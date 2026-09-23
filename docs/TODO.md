@@ -4,7 +4,8 @@
 - [x] STEP 1 — PRP batch A (01–04)
 - [x] STEP 2 — PRP batch B (05–10)
 - [x] STEP 3 — PRP batch C (11–17)
-- [ ] STEP 4 — Phases + decisions (18–19), then you answer decisions
+- [x] STEP 4 — Phases + decisions (18–19) written, consistency review done
+- [ ] STEP 4 — You answer decisions D-01 … D-61; PRP updated; DECISIONS.md filled
 
 ## Stage 2 — Setup
 - [ ] STEP 5 — Project setup + GitHub

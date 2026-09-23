@@ -71,11 +71,11 @@ Words used above:
 ### 2.3 Database side (Supabase PostgreSQL + Storage)
 
 - **RLS is switched on for every table.** Even if the server code had a bug, the database refuses rows from another organization or rows the role may not see. This is the **last and strongest** protection.
-- **Helper functions** in SQL (details in `06-authorization-rls.md`): `is_member(org_id)`, `has_role(org_id, roles[])`, `is_platform_admin()`, `client_customer_id(org_id)`, `can_write(org_id)`.
+- **Helper functions** in SQL (details in `06-authorization-rls.md`): `is_member(org_id)`, `has_role(org_id, roles[])`, `is_platform_admin()`, `client_customer_id(org_id)`, `can_write(org_id, roles[])`.
 - **Database functions for multi-step money actions** (example: `issue_invoice(invoice_id)`, `record_payment(...)`, `reverse_payment(...)`): they run inside one **transaction** (all steps succeed together or none do), so invoice numbers never duplicate and balances never go wrong.
 - **Triggers** (automatic actions the database runs on insert/update): set `updated_at`, force `created_by = current user`, recalculate invoice totals, write the activity log, create notifications.
 - **Composite foreign keys** make it impossible to link a record to a record of another organization (details in `04-database.md` §2.3).
-- **Storage**: all buckets are **private**. Files are stored under `{organization_id}/...` and storage policies check membership using that first folder name. Files are opened only with short-lived **signed URLs** (temporary download links that expire after a few minutes).
+- **Storage**: the documents bucket is **private** (only organization logos use a separate public-read bucket — D-44). Files are stored under `{organization_id}/...`; storage policies check the organization folder on upload and the `documents` table's RLS on download (`10-documents.md`). Files are opened only with short-lived **signed URLs** (temporary download links that expire after a few minutes).
 
 ## 3. Where security is enforced (summary)
 

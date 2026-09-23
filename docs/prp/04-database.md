@@ -148,7 +148,7 @@ On top of that, RLS insert/update policies check that the user is a member of th
 | | `notifications` | ✅ | |
 | | `activity_logs` | ✅ | |
 
-Total: **25 tables** in V1, plus one small internal table `private.rate_limits` (attempt counters for rate limiting — D-53; lives in the unexposed `private` schema, no user access, created in Step 23).
+Total: **25 tables** in V1, plus one small internal table `private.rate_limits` (attempt counters for rate limiting — D-53; lives in the unexposed `private` schema, no user access, created in Step 11, where invitations are its first user).
 
 ---
 
@@ -691,6 +691,8 @@ Retention: D-27.
 | `issue_invoice(invoice_id)` | function | Gives number, snapshots `bill_to`, sets status `sent` |
 | `record_payment(...)` / `reverse_payment(...)` | functions | Safe payment changes |
 | Helper functions for RLS | functions | `is_member`, `has_role`, `is_platform_admin`, `client_customer_id`, `can_write` — see `06-authorization-rls.md` |
+
+The complete list of database functions (including `void_invoice`, `duplicate_invoice`, `void_expense`, platform functions) is in `06-authorization-rls.md` §3–4.
 
 ---
 

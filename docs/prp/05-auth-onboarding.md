@@ -15,7 +15,8 @@ The exact function names below (e.g. `getClaims()`, `verifyOtp()`) are checked a
 
 | Route | Who can open it | Purpose |
 |---|---|---|
-| `/` | Everyone | Public home page (what the software is, pricing, login/signup buttons) |
+| `/` | Everyone | Public home page (what the software is, login/signup buttons) |
+| `/pricing` | Everyone | Public plans page (from `plans` where `is_public`) |
 | `/signup` | Logged-out | Create an account |
 | `/login` | Logged-out | Log in |
 | `/forgot-password` | Everyone | Ask for a password reset email |

@@ -175,7 +175,7 @@ Platform Admin column: the platform admin has **no rights inside an organization
 
 | Permission | Platform Admin | Owner | Admin | Manager | Accountant | Employee | Client |
 |---|---|---|---|---|---|---|---|
-| View team member list | ❌ | ✅ | ✅ | 👁 | ❌ | ❌ (co-members on own projects only) | ❌ |
+| View team member list | ❌ | ✅ | ✅ | 👁 | ❌ (sees names on tasks only) | ❌ (co-members on own projects only) | ❌ |
 | Invite ADMIN | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
 | Invite MANAGER / ACCOUNTANT / EMPLOYEE | ❌ | ✅ | ✅ | D-09 → ❌ | ❌ | ❌ | ❌ |
 | Invite CLIENT (linked to a customer) | ❌ | ✅ | ✅ | D-09 → ❌ | ❌ | ❌ | ❌ |
@@ -248,7 +248,7 @@ A person can see a document only if they can see the record it is attached to (c
 | View / download documents | ❌ | ✅ | ✅ | ✅ (not on expenses) | ✅ (customers, invoices, expenses; projects/tasks 👁 per D-03) | Assigned | Linked + "visible to client" only |
 | Upload documents | ❌ | ✅ | ✅ | ✅ customers/projects/tasks | ✅ customers/invoices/expenses | D-22 → Assigned | D-21 → ❌ |
 | Mark document visible to client | ❌ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
-| Delete documents | ❌ | ✅ | ✅ | Own uploads | Own uploads | Own uploads | ❌ |
+| Delete documents | ❌ | ✅ | ✅ | Own uploads | Own uploads (not on issued invoices / expenses) | Own uploads | ❌ |
 | Upload organization logo | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
 
 ### 3.10 Reports, dashboards, notifications, activity log
